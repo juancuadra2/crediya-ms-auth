@@ -1,7 +1,7 @@
 package co.com.jcuadrado.api;
 
-import co.com.jcuadrado.api.dto.CreateRoleDTO;
-import co.com.jcuadrado.api.dto.RoleDTO;
+import co.com.jcuadrado.api.dto.role.CreateRoleDTO;
+import co.com.jcuadrado.api.dto.role.RoleDTO;
 import co.com.jcuadrado.api.mapper.RoleDTOMapper;
 import co.com.jcuadrado.usecase.role.RoleUseCase;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class Handler {
+public class RoleHandler {
     private final RoleUseCase roleUseCase;
     private final RoleDTOMapper roleDTOMapper;
 

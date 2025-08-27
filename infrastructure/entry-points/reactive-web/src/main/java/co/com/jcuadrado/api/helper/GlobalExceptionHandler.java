@@ -1,0 +1,105 @@
+package co.com.jcuadrado.api.helper;
+
+import co.com.jcuadrado.api.dto.ErrorResponseDTO;
+import co.com.jcuadrado.constants.ErrorCode;
+import co.com.jcuadrado.exceptions.GeneralDomainException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Component
+@Log4j2
+public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
+
+    private final ObjectMapper objectMapper;
+
+    public GlobalExceptionHandler(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    @NonNull
+    public Mono<Void> handle(ServerWebExchange exchange, @NonNull Throwable ex) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+
+        ErrorResponseDTO errorResponse;
+        HttpStatus httpStatus;
+
+        switch (ex) {
+            case GeneralDomainException domainEx -> {
+                httpStatus = mapErrorCodeToHttpStatus(domainEx.getCode());
+
+                errorResponse = ErrorResponseDTO.builder()
+                        .messages(Set.of(domainEx.getMessage()))
+                        .error(domainEx.getCode().name())
+                        .status(httpStatus.name())
+                        .build();
+
+                log.warn("Domain exception: {}", domainEx.getMessage());
+            }
+            case WebExchangeBindException bindEx -> {
+                // Errores de validación
+                httpStatus = HttpStatus.BAD_REQUEST;
+
+                Set<String> validationMessages = bindEx.getBindingResult()
+                        .getFieldErrors()
+                        .stream()
+                        .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                        .collect(Collectors.toSet());
+
+                errorResponse = ErrorResponseDTO.builder()
+                        .messages(validationMessages)
+                        .error("VALIDATION_ERROR")
+                        .status(httpStatus.name())
+                        .build();
+
+                log.warn("Validation error: {}", validationMessages);
+            }
+            default -> {
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                errorResponse = ErrorResponseDTO.builder()
+                        .messages(Set.of("Se ha producido un error interno."))
+                        .error("INTERNAL_ERROR")
+                        .status(httpStatus.name())
+                        .build();
+
+                log.error("Unexpected error", ex);
+            }
+        }
+
+        response.setStatusCode(httpStatus);
+
+        try {
+            String jsonResponse = objectMapper.writeValueAsString(errorResponse);
+            DataBuffer buffer = response.bufferFactory().wrap(jsonResponse.getBytes(StandardCharsets.UTF_8));
+            return response.writeWith(Mono.just(buffer));
+        } catch (Exception e) {
+            log.error("Error serializing error response", e);
+            return response.setComplete();
+        }
+    }
+
+    private HttpStatus mapErrorCodeToHttpStatus(ErrorCode errorCode) {
+        return switch (errorCode) {
+            case BAD_REQUEST -> HttpStatus.BAD_REQUEST;
+            case NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case CONFLICT -> HttpStatus.CONFLICT;
+            default -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
+    }
+}

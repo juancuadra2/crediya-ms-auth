@@ -1,6 +1,6 @@
-package co.com.jcuadrado.api.dto;
+package co.com.jcuadrado.api.dto.role;
 
-public record RoleDTO(
+public record UpdateRoleDTO(
         String id,
         String name,
         String description

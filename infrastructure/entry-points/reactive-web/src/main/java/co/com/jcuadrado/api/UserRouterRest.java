@@ -10,10 +10,12 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
-public class RouterRest {
+public class UserRouterRest {
+
     @Bean
-    public RouterFunction<ServerResponse> routerFunction(Handler handler) {
-        return route(POST("/api/role"), handler::listenSaveRole)
-                .andRoute(GET("/api/role"), handler::listenGetAllRoles);
+    public RouterFunction<ServerResponse> userRouterFunction(UserHandler handler) {
+        return route(POST("/api/user"), handler::listenSaveUser)
+                .andRoute(GET("/api/user"), handler::listenGetAllUsers);
     }
+
 }
