@@ -1,5 +1,6 @@
 package co.com.jcuadrado.api.helper;
 
+import co.com.jcuadrado.api.constant.ExceptionError;
 import co.com.jcuadrado.api.dto.ErrorResponseDTO;
 import co.com.jcuadrado.constants.ErrorCode;
 import co.com.jcuadrado.exceptions.GeneralDomainException;
@@ -50,7 +51,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
                         .status(httpStatus.name())
                         .build();
 
-                log.warn("Domain exception: {}", domainEx.getMessage());
+                log.error(ExceptionError.DOMAIN_EXCEPTION_LOG, domainEx.getMessage());
             }
             case WebExchangeBindException bindEx -> {
                 // Errores de validación
@@ -64,21 +65,21 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
 
                 errorResponse = ErrorResponseDTO.builder()
                         .messages(validationMessages)
-                        .error("VALIDATION_ERROR")
+                        .error(ExceptionError.VALIDATION_EXCEPTION_LOG)
                         .status(httpStatus.name())
                         .build();
 
-                log.warn("Validation error: {}", validationMessages);
+                log.error(ExceptionError.VALIDATION_EXCEPTION_LOG, validationMessages);
             }
             default -> {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 errorResponse = ErrorResponseDTO.builder()
-                        .messages(Set.of("Se ha producido un error interno."))
-                        .error("INTERNAL_ERROR")
+                        .messages(Set.of(ExceptionError.INTERNAL_SERVER_ERROR_MESSAGE))
+                        .error(ExceptionError.INTERNAL_SERVER_ERROR_TITLE)
                         .status(httpStatus.name())
                         .build();
 
-                log.error("Unexpected error", ex);
+                log.error(ExceptionError.INTERNAL_SERVER_ERROR_LOG, ex);
             }
         }
 
@@ -89,7 +90,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
             DataBuffer buffer = response.bufferFactory().wrap(jsonResponse.getBytes(StandardCharsets.UTF_8));
             return response.writeWith(Mono.just(buffer));
         } catch (Exception e) {
-            log.error("Error serializing error response", e);
+            log.error(ExceptionError.SERIALIZATION_EXCEPTION_MESSAGE, e);
             return response.setComplete();
         }
     }

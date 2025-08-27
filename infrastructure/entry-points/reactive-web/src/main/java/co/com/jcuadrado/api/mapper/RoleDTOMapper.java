@@ -10,16 +10,10 @@ import reactor.core.publisher.Mono;
 
 @Mapper(componentModel = "spring")
 public interface RoleDTOMapper {
-    // Conversión de Domain Model a DTO para respuestas
     RoleDTO toDTO(Role role);
-
-    // Conversión de DTO a Domain Model (para crear)
     Role toDomain(CreateRoleDTO createRoleDTO);
-
-    // Conversión de UpdateDTO a Domain Model
     Role toDomain(UpdateRoleDTO updateRoleDTO);
 
-    // Métodos reactivos para colecciones
     default Flux<RoleDTO> toDTOFlux(Flux<Role> roleFlux) {
         return roleFlux.map(this::toDTO);
     }

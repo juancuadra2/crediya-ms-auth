@@ -27,6 +27,9 @@ public class RoleHandler {
                         .bodyValue(roleDTO));
     }
 
+    /**
+     * @param serverRequest This param is not used but is required by the framework.
+     */
     public Mono<ServerResponse> listenGetAllRoles(ServerRequest serverRequest) {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)

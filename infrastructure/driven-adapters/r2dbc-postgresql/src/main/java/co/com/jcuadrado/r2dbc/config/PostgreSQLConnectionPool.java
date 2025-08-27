@@ -1,5 +1,6 @@
 package co.com.jcuadrado.r2dbc.config;
 
+import co.com.jcuadrado.r2dbc.constant.DatabaseConfigConstants;
 import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
@@ -11,11 +12,6 @@ import java.time.Duration;
 
 @Configuration
 public class PostgreSQLConnectionPool {
-    /* Change these values for your project */
-    public static final int INITIAL_SIZE = 12;
-    public static final int MAX_SIZE = 15;
-    public static final int MAX_IDLE_TIME = 30;
-    public static final int DEFAULT_PORT = 5432;
 
 	@Bean
 	public ConnectionPool getConnectionConfig(PostgresqlConnectionProperties properties) {
@@ -30,11 +26,11 @@ public class PostgreSQLConnectionPool {
 
         ConnectionPoolConfiguration poolConfiguration = ConnectionPoolConfiguration.builder()
                 .connectionFactory(new PostgresqlConnectionFactory(dbConfiguration))
-                .name("api-postgres-connection-pool")
-                .initialSize(INITIAL_SIZE)
-                .maxSize(MAX_SIZE)
-                .maxIdleTime(Duration.ofMinutes(MAX_IDLE_TIME))
-                .validationQuery("SELECT 1")
+                .name(DatabaseConfigConstants.POOL_CONFIG_NAME)
+                .initialSize(DatabaseConfigConstants.INITIAL_SIZE)
+                .maxSize(DatabaseConfigConstants.MAX_SIZE)
+                .maxIdleTime(Duration.ofMinutes(DatabaseConfigConstants.MAX_IDLE_TIME))
+                .validationQuery(DatabaseConfigConstants.VALIDATION_QUERY)
                 .build();
 
 		return new ConnectionPool(poolConfiguration);

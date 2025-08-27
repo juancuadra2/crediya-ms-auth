@@ -2,7 +2,8 @@ package co.com.jcuadrado.r2dbc.repository.user;
 
 import co.com.jcuadrado.model.user.User;
 import co.com.jcuadrado.model.user.gateways.UserRepository;
-import co.com.jcuadrado.r2dbc.constants.ErrorCode;
+import co.com.jcuadrado.r2dbc.constant.ErrorCode;
+import co.com.jcuadrado.r2dbc.constant.UserConstants;
 import co.com.jcuadrado.r2dbc.entity.UserEntity;
 import co.com.jcuadrado.r2dbc.exception.GeneralException;
 import co.com.jcuadrado.r2dbc.helper.ReactiveAdapterOperations;
@@ -33,7 +34,7 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         entity.setRole(UUID.fromString(user.getRole()));
         return repository.save(entity)
                 .map(this::toEntity)
-                .onErrorMap(ex -> new GeneralException("Error al guardar usuario.", ErrorCode.INTERNAL_ERROR));
+                .onErrorMap(ex -> new GeneralException(UserConstants.ERROR_SAVING_USER + ex.getMessage() , ErrorCode.INTERNAL_ERROR));
     }
 
     @Override

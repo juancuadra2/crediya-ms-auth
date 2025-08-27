@@ -1,6 +1,6 @@
 package co.com.jcuadrado.api.util;
 
-import co.com.jcuadrado.api.constants.ErrorMessage;
+import co.com.jcuadrado.api.constant.ErrorMessage;
 import co.com.jcuadrado.api.dto.ErrorResponseDTO;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -14,9 +14,7 @@ import java.util.stream.Collectors;
 
 public final class ValidationUtil {
 
-    private ValidationUtil() {
-        // Utility class
-    }
+    private ValidationUtil() {}
 
     public static <T> Mono<ServerResponse> validateAndReturnError(Validator validator, T dto) {
         Set<ConstraintViolation<T>> violations = validator.validate(dto);
@@ -38,17 +36,5 @@ public final class ValidationUtil {
         }
 
         return Mono.empty();
-    }
-
-    public static <T> boolean hasValidationErrors(Validator validator, T dto) {
-        Set<ConstraintViolation<T>> violations = validator.validate(dto);
-        return !violations.isEmpty();
-    }
-
-    public static <T> Set<String> getValidationErrors(Validator validator, T dto) {
-        Set<ConstraintViolation<T>> violations = validator.validate(dto);
-        return violations.stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.toSet());
     }
 }

@@ -30,19 +30,4 @@ public class RoleReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     public Flux<Role> getAllRoles() {
         return super.findAll();
     }
-
-    @Override
-    public Mono<Role> getRoleById(String id) {
-        return super.findById(id);
-    }
-
-    @Override
-    public Mono<Role> updateRole(Role role) {
-        return super.save(role);
-    }
-
-    @Override
-    public Mono<Void> deleteRole(String id) {
-        return repository.deleteById(id);
-    }
 }

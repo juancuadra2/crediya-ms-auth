@@ -7,7 +7,4 @@ import reactor.core.publisher.Mono;
 public interface RoleRepository {
     Mono<Role> saveRole(Role role);
     Flux<Role> getAllRoles();
-    Mono<Role> getRoleById(String id);
-    Mono<Role>  updateRole(Role role);
-    Mono<Void> deleteRole(String id);
 }

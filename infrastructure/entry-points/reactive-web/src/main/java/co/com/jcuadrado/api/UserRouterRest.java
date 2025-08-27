@@ -1,5 +1,6 @@
 package co.com.jcuadrado.api;
 
+import co.com.jcuadrado.api.constant.UserConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -14,8 +15,8 @@ public class UserRouterRest {
 
     @Bean
     public RouterFunction<ServerResponse> userRouterFunction(UserHandler handler) {
-        return route(POST("/api/user"), handler::listenSaveUser)
-                .andRoute(GET("/api/user"), handler::listenGetAllUsers);
+        return route(POST(UserConstants.USERS_API_PATH), handler::listenSaveUser)
+                .andRoute(GET(UserConstants.USERS_API_PATH), handler::listenGetAllUsers);
     }
 
 }

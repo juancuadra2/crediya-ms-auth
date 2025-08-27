@@ -14,6 +14,6 @@ public class RoleRouterRest {
     @Bean
     public RouterFunction<ServerResponse> roleRouterFunction(RoleHandler handler) {
         return route(POST("/api/role"), handler::listenSaveRole)
-                .andRoute(GET("/api/role"), handler::listenGetAllRoles);
+                .andRoute(GET("/api/role"),   handler::listenGetAllRoles);
     }
 }

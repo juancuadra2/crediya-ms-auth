@@ -1,7 +1,7 @@
 package co.com.jcuadrado.api.dto.user;
 
-import co.com.jcuadrado.api.constants.ErrorMessage;
-import co.com.jcuadrado.api.constants.RegexPattern;
+import co.com.jcuadrado.api.constant.ErrorMessage;
+import co.com.jcuadrado.api.constant.RegexPattern;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 

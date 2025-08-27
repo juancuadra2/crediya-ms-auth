@@ -18,16 +18,4 @@ public class RoleUseCase {
     public Flux<Role> getAllRoles() {
         return roleRepository.getAllRoles();
     }
-
-    public Mono<Role> getRoleById(String id) {
-        return roleRepository.getRoleById(id);
-    }
-
-    public Mono<Role> updateRole(Role role) {
-        return roleRepository.updateRole(role);
-    }
-
-    public Mono<Void> deleteRole(String id) {
-        return roleRepository.deleteRole(id);
-    }
 }

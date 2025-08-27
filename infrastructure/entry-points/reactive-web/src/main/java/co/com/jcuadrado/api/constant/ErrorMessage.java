@@ -1,4 +1,4 @@
-package co.com.jcuadrado.api.constants;
+package co.com.jcuadrado.api.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

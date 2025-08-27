@@ -1,6 +1,6 @@
 package co.com.jcuadrado.api;
 
-import co.com.jcuadrado.api.constants.SuccessStatus;
+import co.com.jcuadrado.api.constant.SuccessStatus;
 import co.com.jcuadrado.api.dto.user.CreateUserDTO;
 import co.com.jcuadrado.api.dto.user.UserDTO;
 import co.com.jcuadrado.api.mapper.UserDTOMapper;

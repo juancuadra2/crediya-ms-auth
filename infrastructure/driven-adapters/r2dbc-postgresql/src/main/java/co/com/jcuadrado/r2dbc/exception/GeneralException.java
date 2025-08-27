@@ -1,6 +1,6 @@
 package co.com.jcuadrado.r2dbc.exception;
 
-import co.com.jcuadrado.r2dbc.constants.ErrorCode;
+import co.com.jcuadrado.r2dbc.constant.ErrorCode;
 import lombok.Getter;
 
 @Getter
