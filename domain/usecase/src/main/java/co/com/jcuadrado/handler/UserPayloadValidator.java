@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import co.com.jcuadrado.constants.ErrorCode;
 import co.com.jcuadrado.constants.ErrorMessage;
+import co.com.jcuadrado.constants.ValidationConstants;
 import co.com.jcuadrado.exceptions.BusinessException;
 import co.com.jcuadrado.model.user.User;
 import static co.com.jcuadrado.util.ObjectsUtil.isNullOrEmpty;
@@ -30,8 +31,8 @@ public class UserPayloadValidator {
         if (Objects.isNull(user.getBaseSalary())){
             return Mono.error(new BusinessException(ErrorMessage.BASE_SALARY_REQUIRED, ErrorCode.BAD_REQUEST));
         }
-        if (user.getBaseSalary().compareTo(BigDecimal.ZERO) <= 0 ||
-            user.getBaseSalary().compareTo(new BigDecimal("15000000")) > 0) {
+        if (user.getBaseSalary().compareTo(BigDecimal.ZERO) <= ValidationConstants.MIN_SALARY_RANGE ||
+            user.getBaseSalary().compareTo(new BigDecimal(ValidationConstants.MAX_SALARY_RANGE)) > ValidationConstants.MIN_SALARY_RANGE) {
             return Mono.error(new BusinessException(ErrorMessage.BASE_SALARY_RANGE, ErrorCode.BAD_REQUEST));
         }
         return Mono.just(user);

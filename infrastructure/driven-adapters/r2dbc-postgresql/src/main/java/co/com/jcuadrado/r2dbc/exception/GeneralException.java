@@ -12,9 +12,4 @@ public class GeneralException extends RuntimeException {
         super(message);
         this.code = code;
     }
-
-    public GeneralException(String message, ErrorCode code, Throwable cause) {
-        super(message, cause);
-        this.code = code;
-    }
 }

@@ -12,6 +12,5 @@ public final class ErrorMessage {
     public static final String EMAIL_ALREADY_EXISTS = "El correo ya existe";
     public static final String BASE_SALARY_REQUIRED = "El salario es obligatorio";
     public static final String BASE_SALARY_RANGE="El salario debe estar entre 1 y 15,000,000";
-    public static final String USER_ALREADY_EXISTS = "El usuario ya existe";
     public static final String ERROR_GETTING_USERS = "Error obteniendo los usuarios";
 }

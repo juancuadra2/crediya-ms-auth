@@ -8,6 +8,5 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface UserReactiveRepository extends ReactiveCrudRepository<UserEntity, UUID>, ReactiveQueryByExampleExecutor<UserEntity> {
-    Mono<UserEntity> findByEmail(String email);
     Mono<UserEntity> findByEmailOrDocumentNumber(String email, String documentNumber);
 }
