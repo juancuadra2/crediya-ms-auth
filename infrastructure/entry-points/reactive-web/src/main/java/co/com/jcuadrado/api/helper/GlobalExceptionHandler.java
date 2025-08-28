@@ -1,12 +1,9 @@
 package co.com.jcuadrado.api.helper;
 
-import co.com.jcuadrado.api.constant.ExceptionError;
-import co.com.jcuadrado.api.dto.ErrorResponseDTO;
-import co.com.jcuadrado.constants.ErrorCode;
-import co.com.jcuadrado.exceptions.GeneralDomainException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
+import java.nio.charset.StandardCharsets;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -16,11 +13,17 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import co.com.jcuadrado.api.constant.ExceptionError;
+import co.com.jcuadrado.api.dto.ErrorResponseDTO;
+import co.com.jcuadrado.constants.ErrorCode;
+import co.com.jcuadrado.exceptions.BusinessException;
+import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
+import reactor.core.publisher.Mono;
 
 @Component
 @Log4j2
@@ -42,16 +45,16 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
         HttpStatus httpStatus;
 
         switch (ex) {
-            case GeneralDomainException domainEx -> {
-                httpStatus = mapErrorCodeToHttpStatus(domainEx.getCode());
+            case BusinessException businessException -> {
+                httpStatus = mapErrorCodeToHttpStatus(businessException.code);
 
                 errorResponse = ErrorResponseDTO.builder()
-                        .messages(Set.of(domainEx.getMessage()))
-                        .error(domainEx.getCode().name())
+                        .messages(Set.of(businessException.getMessage()))
+                        .error(businessException.code.name())
                         .status(httpStatus.name())
                         .build();
 
-                log.error(ExceptionError.DOMAIN_EXCEPTION_LOG, domainEx.getMessage());
+                log.error(ExceptionError.DOMAIN_EXCEPTION_LOG, businessException.getMessage());
             }
             case WebExchangeBindException bindEx -> {
                 // Errores de validación
@@ -89,7 +92,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
             String jsonResponse = objectMapper.writeValueAsString(errorResponse);
             DataBuffer buffer = response.bufferFactory().wrap(jsonResponse.getBytes(StandardCharsets.UTF_8));
             return response.writeWith(Mono.just(buffer));
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             log.error(ExceptionError.SERIALIZATION_EXCEPTION_MESSAGE, e);
             return response.setComplete();
         }

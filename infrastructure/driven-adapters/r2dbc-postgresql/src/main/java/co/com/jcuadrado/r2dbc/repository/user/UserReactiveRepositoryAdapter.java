@@ -1,5 +1,11 @@
 package co.com.jcuadrado.r2dbc.repository.user;
 
+import java.util.UUID;
+
+import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import co.com.jcuadrado.model.user.User;
 import co.com.jcuadrado.model.user.gateways.UserRepository;
 import co.com.jcuadrado.r2dbc.constant.ErrorCode;
@@ -7,13 +13,8 @@ import co.com.jcuadrado.r2dbc.constant.UserConstants;
 import co.com.jcuadrado.r2dbc.entity.UserEntity;
 import co.com.jcuadrado.r2dbc.exception.GeneralException;
 import co.com.jcuadrado.r2dbc.helper.ReactiveAdapterOperations;
-import org.reactivecommons.utils.ObjectMapper;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.UUID;
 
 @Repository
 public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
@@ -43,22 +44,7 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     }
 
     @Override
-    public Mono<User> getUserByEmail(String email) {
-        return super.repository.findByEmail(email).map(this::toEntity);
-    }
-
-    @Override
-    public Mono<User> getUserByDocumentNumber(String documentNumber) {
-        return super.repository.findByDocumentNumber(documentNumber).map(this::toEntity);
-    }
-
-    @Override
-    public Mono<User> updateUser(User user) {
-        return super.save(user);
-    }
-
-    @Override
-    public Mono<Void> deleteUser(String documentNumber) {
-        return super.repository.deleteByDocumentNumber(documentNumber);
+    public Mono<User> getUserByEmailOrDocumentNumber(String email, String documentNumber) {
+        return super.repository.findByEmailOrDocumentNumber(email, documentNumber).map(this::toEntity);
     }
 }

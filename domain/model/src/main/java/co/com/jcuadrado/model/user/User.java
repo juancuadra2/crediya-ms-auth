@@ -1,7 +1,13 @@
 package co.com.jcuadrado.model.user;
-import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -18,5 +24,5 @@ public class User {
     private String address;
     private LocalDate birthDate;
     private String role;
-    private Double baseSalary;
+    private BigDecimal baseSalary;
 }

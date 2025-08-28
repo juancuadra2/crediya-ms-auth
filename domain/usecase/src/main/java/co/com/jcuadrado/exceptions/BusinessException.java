@@ -4,11 +4,11 @@ import co.com.jcuadrado.constants.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class GeneralDomainException extends RuntimeException {
+public class BusinessException extends RuntimeException {
 
-    private final ErrorCode code;
+    public final ErrorCode code;
 
-    public GeneralDomainException(String message, ErrorCode code) {
+    public BusinessException(String message, ErrorCode code) {
         super(message);
         this.code = code;
     }

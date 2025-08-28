@@ -1,7 +1,10 @@
 package co.com.jcuadrado.util;
 
+import lombok.NoArgsConstructor;
+
 import java.util.Collection;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ObjectsUtil {
 
     public static boolean isNullOrEmpty(Object value) {
