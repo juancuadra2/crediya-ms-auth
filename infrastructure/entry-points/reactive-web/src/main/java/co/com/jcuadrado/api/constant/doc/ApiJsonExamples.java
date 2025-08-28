@@ -1,0 +1,86 @@
+package co.com.jcuadrado.api.constant.doc;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+
+public final class ApiJsonExamples {
+
+    public static final String CREATE_USER_REQUEST_EXAMPLE = """
+        {
+          "documentNumber": "12345678",
+          "name": "Juan",
+          "lastName": "Pérez",
+          "email": "juan.perez@example.com",
+          "phone": "+573001234567",
+          "address": "Calle 123 #45-67",
+          "birthDate": "1990-01-15",
+          "role": "ADMIN",
+          "baseSalary": 2500000.0
+        }
+        """;
+    
+    public static final String USER_CREATED_RESPONSE_EXAMPLE = """
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440000",
+          "documentNumber": "12345678",
+          "name": "Juan",
+          "lastName": "Pérez",
+          "email": "juan.perez@example.com",
+          "phone": "+573001234567",
+          "address": "Calle 123 #45-67",
+          "birthDate": "1990-01-15",
+          "baseSalary": 2500000.0,
+          "role": "ADMIN"
+        }
+        """;
+
+    public static final String USERS_LIST_RESPONSE_EXAMPLE = """
+        [
+          {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "documentNumber": "12345678",
+            "name": "Juan",
+            "lastName": "Pérez",
+            "email": "juan.perez@example.com",
+            "phone": "+573001234567",
+            "address": "Calle 123 #45-67",
+            "birthDate": "1990-01-15",
+            "baseSalary": 2500000.0,
+            "role": "ADMIN"
+          },
+          {
+            "id": "550e8400-e29b-41d4-a716-446655440001",
+            "documentNumber": "87654321",
+            "name": "María",
+            "lastName": "García",
+            "email": "maria.garcia@example.com",
+            "phone": "+573009876543",
+            "address": "Carrera 45 #23-89",
+            "birthDate": "1985-05-20",
+            "baseSalary": 3000000.0,
+            "role": "USER"
+          }
+        ]
+        """;
+    
+    public static final String VALIDATION_ERROR_RESPONSE_EXAMPLE = """
+        {
+          "messages": [
+            "El email debe tener un formato válido",
+            "El número de teléfono debe seguir el patrón válido"
+          ],
+          "error": "Validation Error",
+          "status": "BAD_REQUEST"
+        }
+        """;
+
+    public static final String INTERNAL_SERVER_ERROR_RESPONSE_EXAMPLE = """
+        {
+          "messages": ["Error interno del servidor"],
+          "error": "Internal Server Error",
+          "status": "INTERNAL_SERVER_ERROR"
+        }
+        """;
+}
