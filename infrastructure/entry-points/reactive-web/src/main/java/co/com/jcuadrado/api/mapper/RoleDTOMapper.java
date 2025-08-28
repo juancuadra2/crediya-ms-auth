@@ -1,17 +1,22 @@
 package co.com.jcuadrado.api.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 import co.com.jcuadrado.api.dto.role.CreateRoleDTO;
 import co.com.jcuadrado.api.dto.role.RoleDTO;
 import co.com.jcuadrado.api.dto.role.UpdateRoleDTO;
 import co.com.jcuadrado.model.role.Role;
-import org.mapstruct.Mapper;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Mapper(componentModel = "spring")
 public interface RoleDTOMapper {
     RoleDTO toDTO(Role role);
+
+    @Mapping(target = "id", ignore = true)
     Role toDomain(CreateRoleDTO createRoleDTO);
+
     Role toDomain(UpdateRoleDTO updateRoleDTO);
 
     default Flux<RoleDTO> toDTOFlux(Flux<Role> roleFlux) {
