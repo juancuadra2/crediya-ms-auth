@@ -23,7 +23,6 @@ public final class ApiJsonExamples {
     
     public static final String USER_CREATED_RESPONSE_EXAMPLE = """
         {
-          "id": "550e8400-e29b-41d4-a716-446655440000",
           "documentNumber": "12345678",
           "name": "Juan",
           "lastName": "Pérez",
@@ -39,7 +38,6 @@ public final class ApiJsonExamples {
     public static final String USERS_LIST_RESPONSE_EXAMPLE = """
         [
           {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
             "documentNumber": "12345678",
             "name": "Juan",
             "lastName": "Pérez",
@@ -51,7 +49,6 @@ public final class ApiJsonExamples {
             "role": "ADMIN"
           },
           {
-            "id": "550e8400-e29b-41d4-a716-446655440001",
             "documentNumber": "87654321",
             "name": "María",
             "lastName": "García",

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class UserDtoConstants {
 
-    public static final String USER_ID_DESCRIPTION = "Identificador único del usuario";
     public static final String DOCUMENT_NUMBER_DESCRIPTION = "Número de documento del usuario";
     public static final String NAME_DESCRIPTION = "Nombre del usuario";
     public static final String LAST_NAME_DESCRIPTION = "Apellido del usuario";
@@ -27,7 +26,6 @@ public final class UserDtoConstants {
 
     public static final String PHONE_PATTERN = "^\\+57[0-9]{10}$";
 
-    public static final String USER_ID_EXAMPLE = "550e8400-e29b-41d4-a716-446655440000";
     public static final String DOCUMENT_NUMBER_EXAMPLE = "12345678";
     public static final String NAME_EXAMPLE = "Juan";
     public static final String LAST_NAME_EXAMPLE = "Pérez";

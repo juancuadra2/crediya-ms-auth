@@ -2,7 +2,6 @@ package co.com.jcuadrado.api.dto.user;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
 
 import co.com.jcuadrado.api.constant.doc.OpenApiSchemaConstants;
 import co.com.jcuadrado.api.constant.doc.UserDtoConstants;
@@ -12,9 +11,6 @@ import lombok.Builder;
 @Builder(toBuilder = true)
 @Schema(description = OpenApiSchemaConstants.USER_DTO_DESCRIPTION)
 public record UserDTO(
-        @Schema(description = UserDtoConstants.USER_ID_DESCRIPTION, example = UserDtoConstants.USER_ID_EXAMPLE)
-        UUID id,
-        
         @Schema(description = UserDtoConstants.DOCUMENT_NUMBER_DESCRIPTION, example = UserDtoConstants.DOCUMENT_NUMBER_EXAMPLE)
         String documentNumber,
         
