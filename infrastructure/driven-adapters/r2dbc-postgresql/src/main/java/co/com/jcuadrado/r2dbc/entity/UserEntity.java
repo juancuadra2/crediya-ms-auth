@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class UserEntity {
     private String phone;
     private String address;
     private LocalDate birthDate;
-    private Double baseSalary;
+    private BigDecimal baseSalary;
     @Column(UserConstants.ROLE_ID_COLUMN_NAME)
     private UUID role;
 }

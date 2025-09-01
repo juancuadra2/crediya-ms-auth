@@ -245,4 +245,53 @@ class UserUseCaseTest {
                 .verify();
     }
 
+    @Test
+    void successGetUserByEmail() {
+        String email = "test@mail.com";
+        User user = User.builder().email(email).build();
+
+        when(repository.getUserByEmail(email)).thenReturn(Mono.just(user));
+
+        Mono<User> result = useCase.getUserByEmail(email);
+
+        StepVerifier.create(result)
+                .expectNext(user)
+                .verifyComplete();
+
+        Mockito.verify(repository).getUserByEmail(email);
+    }
+
+    @Test
+    void  failedGetUserByEmailUserNotFound() {
+        String email = "test@mail.com";
+        when(repository.getUserByEmail(email)).thenReturn(Mono.empty());
+
+        Mono<User> result = useCase.getUserByEmail(email);
+
+        StepVerifier.create(result)
+                .expectErrorSatisfies(error -> {
+                    BusinessException ex = assertInstanceOf(BusinessException.class, error);
+                    assertEquals(ErrorMessage.USER_NOT_FOUND, ex.getMessage());
+                })
+                .verify();
+
+        Mockito.verify(repository).getUserByEmail(email);
+    }
+
+    @Test
+    void failedGetUserByEmail() {
+        String email = "test@mail.com";
+        when(repository.getUserByEmail(email)).thenReturn(Mono.error(new RuntimeException("Database error")));
+
+        Mono<User> result = useCase.getUserByEmail(email);
+
+        StepVerifier.create(result)
+                .expectErrorSatisfies(error -> {
+                    assertEquals("Database error", error.getMessage());
+                })
+                .verify();
+
+        Mockito.verify(repository).getUserByEmail(email);
+    }
+
 }

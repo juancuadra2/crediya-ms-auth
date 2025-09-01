@@ -15,7 +15,7 @@ adapters:
   r2dbc:
     host: "localhost"
     port: 5432
-    database: "crediya"
+    database: "crediya_auth"
     schema: "public"
     username: "jcuadrado"
     password: "jcu4dr4d0"

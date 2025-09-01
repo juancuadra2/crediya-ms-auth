@@ -47,4 +47,9 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     public Mono<User> getUserByEmailOrDocumentNumber(String email, String documentNumber) {
         return super.repository.findFirstByEmailOrDocumentNumber(email, documentNumber).map(this::toEntity);
     }
+
+    @Override
+    public Mono<User> getUserByEmail(String email) {
+        return super.repository.findByEmail(email).map(this::toEntity);
+    }
 }

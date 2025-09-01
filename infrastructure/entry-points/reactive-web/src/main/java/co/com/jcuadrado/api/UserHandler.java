@@ -1,5 +1,6 @@
 package co.com.jcuadrado.api;
 
+import co.com.jcuadrado.api.constant.UserConstants;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -40,5 +41,12 @@ public class UserHandler {
      */
     public Mono<ServerResponse> listenGetAllUsers(ServerRequest serverRequest) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(userDTOMapper.toDTOFlux(userUseCase.getAllUsers()), UserDTO.class);
+    }
+
+    public Mono<ServerResponse> listenGetUserByEmail(ServerRequest serverRequest) {
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userDTOMapper.toDTOMono(userUseCase
+                        .getUserByEmail(serverRequest.pathVariable(UserConstants.EMAIL_PATH_VARIABLE))), UserDTO.class);
     }
 }

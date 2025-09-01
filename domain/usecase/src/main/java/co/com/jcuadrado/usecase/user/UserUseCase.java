@@ -7,20 +7,23 @@ import co.com.jcuadrado.handler.UserExistenceValidator;
 import co.com.jcuadrado.handler.UserPayloadValidator;
 import co.com.jcuadrado.model.user.User;
 import co.com.jcuadrado.model.user.gateways.UserRepository;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@RequiredArgsConstructor
-public class UserUseCase {
-
-    private final UserRepository userRepository;
+public record UserUseCase(
+        UserRepository userRepository
+) {
 
     public Mono<User> saveUser(User user) {
         return UserPayloadValidator.validate(user)
         .flatMap(validUser -> userRepository.getUserByEmailOrDocumentNumber(validUser.getEmail(), validUser.getDocumentNumber())
         .flatMap(existingUser -> UserExistenceValidator.validate(validUser, existingUser))
         .switchIfEmpty(userRepository.saveUser(validUser)));
+    }
+
+    public Mono<User> getUserByEmail(String email) {
+        return this.userRepository.getUserByEmail(email)
+            .switchIfEmpty(Mono.error(new BusinessException(ErrorMessage.USER_NOT_FOUND, ErrorCode.NOT_FOUND)));
     }
 
     public Flux<User> getAllUsers() {
