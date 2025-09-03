@@ -38,7 +38,8 @@ class UserUseCaseTest {
                 .email("juan.cuadrado@mail.com")
                 .baseSalary(BigDecimal.valueOf(10000000L))
                 .build();
-        when(repository.getUserByEmailOrDocumentNumber(user.getEmail(), user.getDocumentNumber())).thenReturn(Mono.empty());
+        when(repository.getUserByEmailOrDocumentNumber(user.getEmail(), user.getDocumentNumber()))
+                .thenReturn(Mono.empty());
         when(repository.saveUser(user)).thenReturn(Mono.just(user));
 
         Mono<User> result = useCase.saveUser(user);
@@ -173,7 +174,7 @@ class UserUseCaseTest {
     }
 
     @Test
-    void failedSaveUserBaseSalaryIsGreaterThanFifteenMillion(){
+    void failedSaveUserBaseSalaryIsGreaterThanFifteenMillion() {
         User user = User.builder()
                 .documentNumber("123456789")
                 .name("Juan")
@@ -202,7 +203,8 @@ class UserUseCaseTest {
                 .baseSalary(BigDecimal.valueOf(10000000.00))
                 .build();
 
-        when(repository.getUserByEmailOrDocumentNumber(user.getEmail(), user.getDocumentNumber())).thenReturn(Mono.just(user));
+        when(repository.getUserByEmailOrDocumentNumber(user.getEmail(), user.getDocumentNumber()))
+                .thenReturn(Mono.just(user));
         when(repository.saveUser(user)).thenReturn(Mono.just(user));
 
         Mono<User> result = useCase.saveUser(user);
@@ -220,8 +222,7 @@ class UserUseCaseTest {
     void successfulGetAllUsers() {
         Flux<User> users = Flux.just(
                 User.builder().email("test1@example.com").documentNumber("123456789").build(),
-                User.builder().email("test2@example.com").documentNumber("987654321").build()
-        );
+                User.builder().email("test2@example.com").documentNumber("987654321").build());
 
         when(repository.getAllUsers()).thenReturn(users);
 
@@ -246,52 +247,39 @@ class UserUseCaseTest {
     }
 
     @Test
-    void successGetUserByEmail() {
-        String email = "test@mail.com";
-        User user = User.builder().email(email).build();
+    void successfulGetUserByDocumentNumber() {
+        String documentNumber = "123456789";
+        User user = User.builder()
+                .documentNumber(documentNumber)
+                .name("Juan")
+                .lastName("Cuadrado")
+                .email("juan.cuadrado@mail.com")
+                .build();
 
-        when(repository.getUserByEmail(email)).thenReturn(Mono.just(user));
+        when(repository.getUserByDocumentNumber(documentNumber)).thenReturn(Mono.just(user));
 
-        Mono<User> result = useCase.getUserByEmail(email);
+        Mono<User> result = useCase.getUserByDocumentNumber(documentNumber);
 
         StepVerifier.create(result)
                 .expectNext(user)
                 .verifyComplete();
-
-        Mockito.verify(repository).getUserByEmail(email);
+        Mockito.verify(repository).getUserByDocumentNumber(documentNumber);
     }
 
     @Test
-    void  failedGetUserByEmailUserNotFound() {
-        String email = "test@mail.com";
-        when(repository.getUserByEmail(email)).thenReturn(Mono.empty());
-
-        Mono<User> result = useCase.getUserByEmail(email);
-
+    void failedGetUserByDocumentNumberNotFound() {
+        String documentNumber = "123456789";
+        when(repository.getUserByDocumentNumber(documentNumber)).thenReturn(Mono.empty());
+        Mono<User> result = useCase.getUserByDocumentNumber(documentNumber);
         StepVerifier.create(result)
                 .expectErrorSatisfies(error -> {
                     BusinessException ex = assertInstanceOf(BusinessException.class, error);
                     assertEquals(ErrorMessage.USER_NOT_FOUND, ex.getMessage());
+                    assertEquals(ErrorCode.NOT_FOUND, ex.getCode());
                 })
                 .verify();
-
-        Mockito.verify(repository).getUserByEmail(email);
-    }
-
-    @Test
-    void failedGetUserByEmail() {
-        String email = "test@mail.com";
-        when(repository.getUserByEmail(email)).thenReturn(Mono.error(new RuntimeException("Database error")));
-
-        Mono<User> result = useCase.getUserByEmail(email);
-
-        StepVerifier.create(result)
-                .expectErrorSatisfies(error -> {
-                    assertEquals("Database error", error.getMessage());
-                })
-                .verify();
-
-        Mockito.verify(repository).getUserByEmail(email);
+        Mockito.verify(repository).getUserByDocumentNumber(documentNumber);
+        Mockito.verifyNoMoreInteractions(repository);
     }
 
 }

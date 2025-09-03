@@ -15,9 +15,9 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class UserRouterRest {
 
     @Bean
-    public RouterFunction<ServerResponse> userRouterFunction(UserHandler handler) {
+    RouterFunction<ServerResponse> userRouterFunction(UserHandler handler) {
         return RouterFunctions.route(POST(UserConstants.USERS_API_PATH), handler::listenSaveUser)
                 .andRoute(GET(UserConstants.USERS_API_PATH), handler::listenGetAllUsers)
-                .andRoute(GET(UserConstants.USERS_API_PATH + UserConstants.EMAIL_ENDPOINT), handler::listenGetUserByEmail);
+                .andRoute(GET(UserConstants.USERS_API_PATH + UserConstants.DOCUMENT_NUMBER_ENDPOINT), handler::listenGetUserByDocumentNumber);
     }
 }

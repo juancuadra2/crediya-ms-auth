@@ -21,9 +21,9 @@ public record UserUseCase(
         .switchIfEmpty(userRepository.saveUser(validUser)));
     }
 
-    public Mono<User> getUserByEmail(String email) {
-        return this.userRepository.getUserByEmail(email)
-            .switchIfEmpty(Mono.error(new BusinessException(ErrorMessage.USER_NOT_FOUND, ErrorCode.NOT_FOUND)));
+    public Mono<User> getUserByDocumentNumber(String documentNumber) {
+        return this.userRepository.getUserByDocumentNumber(documentNumber)
+                .switchIfEmpty(Mono.error(new BusinessException(ErrorMessage.USER_NOT_FOUND, ErrorCode.NOT_FOUND)));
     }
 
     public Flux<User> getAllUsers() {

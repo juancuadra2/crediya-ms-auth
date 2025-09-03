@@ -8,5 +8,5 @@ public interface UserRepository {
     Mono<User> saveUser(User user);
     Flux<User> getAllUsers();
     Mono<User> getUserByEmailOrDocumentNumber(String email, String documentNumber);
-    Mono<User> getUserByEmail(String email);
+    Mono<User> getUserByDocumentNumber(String documentNumber);
 }
