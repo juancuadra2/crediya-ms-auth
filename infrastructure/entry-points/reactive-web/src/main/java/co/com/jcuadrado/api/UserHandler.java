@@ -27,26 +27,28 @@ public class UserHandler {
 
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CreateUserDTO.class)
-            .flatMap(createUserDTO -> ValidationUtil.validateAndReturnError(validator, createUserDTO)
-                .switchIfEmpty(
-                    userUseCase.saveUser(userDTOMapper.toModel(createUserDTO))
-                        .transform(userDTOMapper::toDTOMono)
-                        .flatMap(userDTO -> ResponseUtil.buildSuccessResponse(userDTO, SuccessStatus.CREATED))
-                )
-            );
+                .flatMap(createUserDTO -> ValidationUtil.validateAndReturnError(validator, createUserDTO)
+                        .switchIfEmpty(
+                                userUseCase.saveUser(userDTOMapper.toModel(createUserDTO))
+                                        .transform(userDTOMapper::toDTOMono)
+                                        .flatMap(userDTO -> ResponseUtil.buildSuccessResponse(userDTO,
+                                                SuccessStatus.CREATED))));
     }
 
     /**
      * @param serverRequest This param is not used but is required by the framework.
      */
     public Mono<ServerResponse> listenGetAllUsers(ServerRequest serverRequest) {
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(userDTOMapper.toDTOFlux(userUseCase.getAllUsers()), UserDTO.class);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(userDTOMapper.toDTOFlux(userUseCase.getAllUsers()), UserDTO.class);
     }
-
-    public Mono<ServerResponse> listenGetUserByEmail(ServerRequest serverRequest) {
+    
+    public Mono<ServerResponse> listenGetUserByDocumentNumber(ServerRequest serverRequest) {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userDTOMapper.toDTOMono(userUseCase
-                        .getUserByEmail(serverRequest.pathVariable(UserConstants.EMAIL_PATH_VARIABLE))), UserDTO.class);
+                        .getUserByDocumentNumber(
+                                serverRequest.pathVariable(UserConstants.DOCUMENT_NUMBER_PATH_VARIABLE))),
+                        UserDTO.class);
     }
 }
