@@ -17,12 +17,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
-        User,
-        UserEntity,
-        UUID,
-        UserReactiveRepository
-        > implements UserRepository {
+public class UserReactiveRepositoryAdapter
+        extends ReactiveAdapterOperations<User, UserEntity, UUID, UserReactiveRepository> implements UserRepository {
 
     protected UserReactiveRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper) {
         super(repository, mapper, d -> mapper.map(d, User.class));
@@ -35,7 +31,8 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         entity.setRole(UUID.fromString(user.getRole()));
         return repository.save(entity)
                 .map(this::toEntity)
-                .onErrorMap(ex -> new GeneralException(UserConstants.ERROR_SAVING_USER + ex.getMessage() , ErrorCode.INTERNAL_ERROR));
+                .onErrorMap(ex -> new GeneralException(UserConstants.ERROR_SAVING_USER + ex.getMessage(),
+                        ErrorCode.INTERNAL_ERROR));
     }
 
     @Override
@@ -51,5 +48,10 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     @Override
     public Mono<User> getUserByDocumentNumber(String documentNumber) {
         return super.repository.findByDocumentNumber(documentNumber).map(this::toEntity);
+    }
+
+    @Override
+    public Mono<User> getUserByEmail(String email) {
+        return super.repository.findByEmail(email).map(this::toEntity);
     }
 }

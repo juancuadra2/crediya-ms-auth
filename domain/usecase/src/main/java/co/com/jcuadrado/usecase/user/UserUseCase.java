@@ -6,19 +6,28 @@ import co.com.jcuadrado.exceptions.BusinessException;
 import co.com.jcuadrado.handler.UserExistenceValidator;
 import co.com.jcuadrado.handler.UserPayloadValidator;
 import co.com.jcuadrado.model.user.User;
+import co.com.jcuadrado.model.user.gateways.PasswordEncoderGateway;
 import co.com.jcuadrado.model.user.gateways.UserRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public record UserUseCase(
-        UserRepository userRepository
+        UserRepository userRepository,
+        PasswordEncoderGateway passwordEncoderGateway
 ) {
 
     public Mono<User> saveUser(User user) {
         return UserPayloadValidator.validate(user)
-        .flatMap(validUser -> userRepository.getUserByEmailOrDocumentNumber(validUser.getEmail(), validUser.getDocumentNumber())
-        .flatMap(existingUser -> UserExistenceValidator.validate(validUser, existingUser))
-        .switchIfEmpty(userRepository.saveUser(validUser)));
+                .flatMap(validUser -> {
+                    String encryptedPassword = passwordEncoderGateway.encode(validUser.getPassword());
+                    User userWithEncryptedPassword = validUser.toBuilder()
+                            .password(encryptedPassword)
+                            .build();
+
+                    return userRepository.getUserByEmailOrDocumentNumber(userWithEncryptedPassword.getEmail(), userWithEncryptedPassword.getDocumentNumber())
+                            .flatMap(existingUser -> UserExistenceValidator.validate(userWithEncryptedPassword, existingUser))
+                            .switchIfEmpty(userRepository.saveUser(userWithEncryptedPassword));
+                });
     }
 
     public Mono<User> getUserByDocumentNumber(String documentNumber) {

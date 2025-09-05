@@ -1,6 +1,6 @@
 package co.com.jcuadrado.api;
 
-import co.com.jcuadrado.api.constant.UserConstants;
+import co.com.jcuadrado.api.constant.api.UserEndpoints;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -48,7 +48,7 @@ public class UserHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userDTOMapper.toDTOMono(userUseCase
                         .getUserByDocumentNumber(
-                                serverRequest.pathVariable(UserConstants.DOCUMENT_NUMBER_PATH_VARIABLE))),
+                                serverRequest.pathVariable(UserEndpoints.DOCUMENT_NUMBER_PATH_VARIABLE))),
                         UserDTO.class);
     }
 }

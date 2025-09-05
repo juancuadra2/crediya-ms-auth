@@ -9,7 +9,7 @@ import co.com.jcuadrado.api.constant.doc.ApiResponseConstants;
 import co.com.jcuadrado.api.constant.doc.OpenApiConstants;
 import co.com.jcuadrado.api.constant.doc.OpenApiOperationConstants;
 import co.com.jcuadrado.api.constant.doc.OpenApiSchemaConstants;
-import co.com.jcuadrado.api.constant.UserConstants;
+import co.com.jcuadrado.api.constant.api.UserEndpoints;
 import co.com.jcuadrado.api.dto.ErrorResponseDTO;
 import co.com.jcuadrado.api.dto.user.CreateUserDTO;
 import co.com.jcuadrado.api.dto.user.UpdateUserDTO;
@@ -37,7 +37,7 @@ public class OpenApiConfig {
                     .info(createApiInfo())
                     .addTagsItem(createUsersTag())
                     .components(createComponents())
-                    .path(UserConstants.USERS_API_PATH, createUsersPaths());
+                    .path(UserEndpoints.USERS_API_PATH, createUsersPaths());
         }
 
         private Info createApiInfo() {

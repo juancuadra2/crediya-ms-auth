@@ -8,4 +8,10 @@ dependencies {
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
     implementation('org.springframework.boot:spring-boot-starter-validation')
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$openApiVersion"
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+    implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jjwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jjwtVersion")
 }

@@ -30,3 +30,7 @@ management:
         enabled: true
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+security:
+  jwt:
+    secret: "amN1YWRyYWRvX3NlY3JldF9rZXlfZm9yX2p3dF90b2tlbl9nZW5lcmF0aW9u"
+    expiration: 3600000

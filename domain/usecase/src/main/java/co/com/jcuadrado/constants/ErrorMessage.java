@@ -14,4 +14,7 @@ public final class ErrorMessage {
     public static final String BASE_SALARY_RANGE="El salario debe estar entre 1 y 15,000,000";
     public static final String ERROR_GETTING_USERS = "Error obteniendo los usuarios";
     public static final String USER_NOT_FOUND = "Usuario no encontrado";
+    public static final String PASSWORD_REQUIRED = "La contraseña es obligatoria";
+    public static final String PASSWORD_MIN_LENGTH = "La contraseña debe tener al menos 8 caracteres";
+    public static final String INVALID_CREDENTIALS = "Credenciales inválidas";
 }

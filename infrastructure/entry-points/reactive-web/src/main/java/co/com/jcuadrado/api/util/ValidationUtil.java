@@ -1,6 +1,6 @@
 package co.com.jcuadrado.api.util;
 
-import co.com.jcuadrado.api.constant.ErrorMessage;
+import co.com.jcuadrado.api.constant.validation.ValidationMessages;
 import co.com.jcuadrado.api.dto.ErrorResponseDTO;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -25,7 +25,7 @@ public final class ValidationUtil {
                     .collect(Collectors.toSet());
 
             ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
-                    .error(ErrorMessage.VALIDATION_FAILED)
+                    .error(ValidationMessages.VALIDATION_FAILED)
                     .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
                     .messages(errorMessages)
                     .build();

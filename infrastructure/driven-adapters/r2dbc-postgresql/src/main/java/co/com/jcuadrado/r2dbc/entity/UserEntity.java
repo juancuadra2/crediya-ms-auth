@@ -26,6 +26,7 @@ public class UserEntity {
     @Column(UserConstants.LAST_NAME_COLUMN_NAME)
     private String lastName;
     private String email;
+    private String password;
     private String phone;
     private String address;
     private LocalDate birthDate;

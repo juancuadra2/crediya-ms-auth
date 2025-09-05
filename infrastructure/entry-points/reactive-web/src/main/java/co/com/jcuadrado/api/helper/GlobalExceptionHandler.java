@@ -17,7 +17,8 @@ import org.springframework.web.server.ServerWebExchange;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import co.com.jcuadrado.api.constant.ExceptionError;
+import co.com.jcuadrado.api.constant.error.LogMessages;
+import co.com.jcuadrado.api.constant.error.SystemErrorMessages;
 import co.com.jcuadrado.api.dto.ErrorResponseDTO;
 import co.com.jcuadrado.constants.ErrorCode;
 import co.com.jcuadrado.exceptions.BusinessException;
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
                         .status(httpStatus.name())
                         .build();
 
-                log.error(ExceptionError.DOMAIN_EXCEPTION_LOG, businessException.getMessage());
+                log.error(LogMessages.DOMAIN_EXCEPTION_LOG, businessException.getMessage());
             }
             case WebExchangeBindException bindEx -> {
                 // Errores de validación
@@ -68,21 +69,21 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
 
                 errorResponse = ErrorResponseDTO.builder()
                         .messages(validationMessages)
-                        .error(ExceptionError.VALIDATION_EXCEPTION_LOG)
+                        .error("VALIDATION_ERROR")
                         .status(httpStatus.name())
                         .build();
 
-                log.error(ExceptionError.VALIDATION_EXCEPTION_LOG, validationMessages);
+                log.error(LogMessages.VALIDATION_EXCEPTION_LOG, validationMessages);
             }
             default -> {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 errorResponse = ErrorResponseDTO.builder()
-                        .messages(Set.of(ExceptionError.INTERNAL_SERVER_ERROR_MESSAGE))
-                        .error(ExceptionError.INTERNAL_SERVER_ERROR_TITLE)
+                        .messages(Set.of(SystemErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE))
+                        .error(SystemErrorMessages.INTERNAL_SERVER_ERROR_TITLE)
                         .status(httpStatus.name())
                         .build();
 
-                log.error(ExceptionError.INTERNAL_SERVER_ERROR_LOG, ex);
+                log.error(LogMessages.INTERNAL_SERVER_ERROR_LOG, ex);
             }
         }
 
@@ -93,7 +94,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
             DataBuffer buffer = response.bufferFactory().wrap(jsonResponse.getBytes(StandardCharsets.UTF_8));
             return response.writeWith(Mono.just(buffer));
         } catch (JsonProcessingException e) {
-            log.error(ExceptionError.SERIALIZATION_EXCEPTION_MESSAGE, e);
+            log.error(SystemErrorMessages.SERIALIZATION_EXCEPTION_MESSAGE, e);
             return response.setComplete();
         }
     }

@@ -4,12 +4,10 @@ import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
@@ -17,6 +15,7 @@ public class User {
     private String name;
     private String lastName;
     private String email;
+    private String password;
     private String documentNumber;
     private String phone;
     private String address;

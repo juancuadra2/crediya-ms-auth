@@ -3,9 +3,9 @@ package co.com.jcuadrado.api.dto.user;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import co.com.jcuadrado.api.constant.ErrorMessage;
+import co.com.jcuadrado.api.constant.validation.ValidationMessages;
 import co.com.jcuadrado.api.constant.doc.OpenApiSchemaConstants;
-import co.com.jcuadrado.api.constant.RegexPattern;
+import co.com.jcuadrado.api.constant.validation.RegexPatterns;
 import co.com.jcuadrado.api.constant.doc.UserDtoConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
@@ -21,7 +21,7 @@ import lombok.Builder;
 @Schema(description = OpenApiSchemaConstants.CREATE_USER_DTO_DESCRIPTION)
 public record CreateUserDTO(
         @Schema(description = UserDtoConstants.DOCUMENT_NUMBER_DESCRIPTION, example = UserDtoConstants.DOCUMENT_NUMBER_EXAMPLE)
-        @NotNull(message = ErrorMessage.DOCUMENT_NUMBER_REQUIRED)
+        @NotNull(message = ValidationMessages.DOCUMENT_NUMBER_REQUIRED)
         String documentNumber,
 
         @Schema(
@@ -30,8 +30,8 @@ public record CreateUserDTO(
                 minLength = 2,
                 maxLength = 50
         )
-        @NotBlank(message = ErrorMessage.NAME_REQUIRED)
-        @Size(min = UserDtoConstants.NAME_MIN_LENGTH, max = UserDtoConstants.NAME_MAX_LENGTH, message = ErrorMessage.NAME_SIZE)
+        @NotBlank(message = ValidationMessages.NAME_REQUIRED)
+        @Size(min = UserDtoConstants.NAME_MIN_LENGTH, max = UserDtoConstants.NAME_MAX_LENGTH, message = ValidationMessages.NAME_SIZE)
         String name,
 
         @Schema(
@@ -40,20 +40,30 @@ public record CreateUserDTO(
                 minLength = 2,
                 maxLength = 50
         )
-        @Size(min = UserDtoConstants.LAST_NAME_MIN_LENGTH, max = UserDtoConstants.LAST_NAME_MAX_LENGTH, message = ErrorMessage.LAST_NAME_SIZE)
+        @Size(min = UserDtoConstants.LAST_NAME_MIN_LENGTH, max = UserDtoConstants.LAST_NAME_MAX_LENGTH, message = ValidationMessages.LAST_NAME_SIZE)
         String lastName,
 
         @Schema(description = UserDtoConstants.EMAIL_DESCRIPTION, example = UserDtoConstants.EMAIL_EXAMPLE)
-        @NotBlank(message = ErrorMessage.EMAIL_REQUIRED)
-        @Email(message = ErrorMessage.EMAIL_INVALID_FORMAT)
+        @NotBlank(message = ValidationMessages.EMAIL_REQUIRED)
+        @Email(message = ValidationMessages.EMAIL_INVALID_FORMAT)
         String email,
+
+        @Schema(
+                description = "User password",
+                example = "mySecretPassword123",
+                minLength = 8,
+                maxLength = 100
+        )
+        @NotBlank(message = "Password is required")
+        @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
+        String password,
 
         @Schema(
                 description = UserDtoConstants.PHONE_DESCRIPTION,
                 example = UserDtoConstants.PHONE_EXAMPLE,
                 pattern = UserDtoConstants.PHONE_PATTERN
         )
-        @Pattern(regexp = RegexPattern.PHONE, message = ErrorMessage.PHONE_INVALID_PATTERN)
+        @Pattern(regexp = RegexPatterns.PHONE, message = ValidationMessages.PHONE_INVALID_PATTERN)
         String phone,
 
         @Schema(
@@ -61,7 +71,7 @@ public record CreateUserDTO(
                 example = UserDtoConstants.ADDRESS_EXAMPLE,
                 maxLength = 255
         )
-        @Size(max = UserDtoConstants.ADDRESS_MAX_LENGTH, message = ErrorMessage.ADDRESS_MAX_LENGTH)
+        @Size(max = UserDtoConstants.ADDRESS_MAX_LENGTH, message = ValidationMessages.ADDRESS_MAX_LENGTH)
         String address,
 
         @Schema(
@@ -72,7 +82,7 @@ public record CreateUserDTO(
 
         @Schema(description = UserDtoConstants.ROLE_DESCRIPTION, example = UserDtoConstants.ROLE_EXAMPLE, 
                 allowableValues = {UserDtoConstants.ROLE_ADMIN, UserDtoConstants.ROLE_USER})
-        @NotBlank(message = ErrorMessage.ROLE_REQUIRED)
+        @NotBlank(message = ValidationMessages.ROLE_REQUIRED)
         String role,
 
         @Schema(
@@ -80,7 +90,7 @@ public record CreateUserDTO(
                 example = UserDtoConstants.BASE_SALARY_EXAMPLE,
                 minimum = UserDtoConstants.BASE_SALARY_MINIMUM_EXAMPLE
         )
-        @DecimalMin(value = UserDtoConstants.BASE_SALARY_MINIMUM, inclusive = false, message = ErrorMessage.BASE_SALARY_MINIMUM)
+        @DecimalMin(value = UserDtoConstants.BASE_SALARY_MINIMUM, inclusive = false, message = ValidationMessages.BASE_SALARY_MINIMUM)
         BigDecimal baseSalary
 ) {
 }
