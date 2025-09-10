@@ -40,6 +40,7 @@ public record CreateUserDTO(
                 minLength = 2,
                 maxLength = 50
         )
+        @NotBlank(message = ValidationMessages.LAST_NAME_REQUIRED)
         @Size(min = UserDtoConstants.LAST_NAME_MIN_LENGTH, max = UserDtoConstants.LAST_NAME_MAX_LENGTH, message = ValidationMessages.LAST_NAME_SIZE)
         String lastName,
 

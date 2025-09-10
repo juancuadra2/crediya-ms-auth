@@ -3,11 +3,10 @@ package co.com.jcuadrado.api.constant.validation;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-/**
- * Mensajes de validación para campos de entrada
- */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ValidationMessages {
+
+    public static final String INVALID_REQUEST_BODY = "Solicitud inválida";
     
     // Campos obligatorios
     public static final String DOCUMENT_NUMBER_REQUIRED = "El número de documento es obligatorio";
@@ -24,7 +23,4 @@ public final class ValidationMessages {
     public static final String PHONE_INVALID_PATTERN = "El teléfono debe tener un formato válido";
     public static final String ADDRESS_MAX_LENGTH = "La dirección no puede exceder 200 caracteres";
     public static final String BASE_SALARY_MINIMUM = "El salario debe ser mayor a 0";
-    
-    // Validación general
-    public static final String VALIDATION_FAILED = "Validación fallida";
 }

@@ -6,14 +6,15 @@ import co.com.jcuadrado.r2dbc.entity.RoleEntity;
 import co.com.jcuadrado.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 @Repository
 public class RoleReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         Role,
         RoleEntity,
-        String,
+        UUID,
         RoleReactiveRepository
         > implements RoleRepository {
 
@@ -22,12 +23,8 @@ public class RoleReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     }
 
     @Override
-    public Mono<Role> saveRole(Role role) {
-        return super.save(role);
-    }
-
-    @Override
-    public Flux<Role> getAllRoles() {
-        return super.findAll();
+    public Mono<Role> getRoleById(String id) {
+        UUID uuid = UUID.fromString(id);
+        return super.findById(uuid);
     }
 }

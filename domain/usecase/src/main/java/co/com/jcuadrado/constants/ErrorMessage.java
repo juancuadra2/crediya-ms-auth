@@ -17,4 +17,5 @@ public final class ErrorMessage {
     public static final String PASSWORD_REQUIRED = "La contraseña es obligatoria";
     public static final String PASSWORD_MIN_LENGTH = "La contraseña debe tener al menos 8 caracteres";
     public static final String INVALID_CREDENTIALS = "Credenciales inválidas";
+    public static final String ROLE_DOES_NOT_EXIST = "El rol no existe";
 }

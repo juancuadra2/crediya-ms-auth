@@ -2,7 +2,8 @@ package co.com.jcuadrado.api.security;
 
 import co.com.jcuadrado.api.constant.api.AuthEndpoints;
 import co.com.jcuadrado.api.constant.auth.AuthConstants;
-import co.com.jcuadrado.api.constant.error.AuthErrorMessages;
+import co.com.jcuadrado.api.exception.AuthException;
+import co.com.jcuadrado.model.auth.gateways.AuthTokenGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -17,35 +18,48 @@ import reactor.util.annotation.NonNull;
 @RequiredArgsConstructor
 public class JwtFilter implements WebFilter {
 
-    private final JwtProvider jwtProvider;
+    private final AuthTokenGateway authTokenGateway;
 
     @Override
     @NonNull
-    public Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
-        String path = request.getPath().value();
-        
-        if (path.startsWith(AuthEndpoints.AUTH_API_PATH)) {
+    public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
+        if (isPublicPath(exchange)) {
             return chain.filter(exchange);
         }
-        
-        String auth = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        
-        if (auth == null) {
-            return Mono.error(new RuntimeException(AuthErrorMessages.NO_TOKEN_PROVIDED_ERROR));
+        return extractToken(exchange.getRequest())
+                .flatMap(this::validateAndProcessToken)
+                .flatMap(token -> authenticateAndContinue(token, exchange, chain));
+    }
+
+    private boolean isPublicPath(ServerWebExchange exchange) {
+        String path = exchange.getRequest().getPath().value();
+        return path.startsWith(AuthEndpoints.AUTH_API_PATH);
+    }
+
+    private Mono<String> extractToken(ServerHttpRequest request) {
+        String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+
+        if (authHeader == null) {
+            return Mono.error(new AuthException(AuthException.ErrorType.UNAUTHORIZED, AuthConstants.NO_TOKEN_PROVIDED_ERROR));
         }
-        
-        if (!auth.startsWith(AuthConstants.BEARER_PREFIX)) {
-            return Mono.error(new RuntimeException(AuthErrorMessages.INVALID_TOKEN_FORMAT_ERROR));
+
+        if (!authHeader.startsWith(AuthConstants.BEARER_PREFIX)) {
+            return Mono.error(new AuthException(AuthException.ErrorType.UNAUTHORIZED, AuthConstants.INVALID_TOKEN_FORMAT_ERROR));
         }
-        
-        String token = auth.replace(AuthConstants.BEARER_PREFIX, "");
-        
-        if (!jwtProvider.validate(token)) {
-            return Mono.error(new RuntimeException(AuthErrorMessages.INVALID_TOKEN_ERROR));
-        }
-        
+
+        return Mono.just(authHeader.replace(AuthConstants.BEARER_PREFIX, ""));
+    }
+
+    private Mono<String> validateAndProcessToken(String token) {
+        return authTokenGateway.validateToken(token)
+                .filter(Boolean::booleanValue)
+                .map(valid -> token)
+                .switchIfEmpty(Mono.error(new AuthException(AuthException.ErrorType.UNAUTHORIZED, AuthConstants.INVALID_TOKEN_ERROR)));
+    }
+
+    private Mono<Void> authenticateAndContinue(String token, ServerWebExchange exchange, WebFilterChain chain) {
         exchange.getAttributes().put(AuthConstants.TOKEN_ATTRIBUTE, token);
         return chain.filter(exchange);
     }
+
 }

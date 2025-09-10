@@ -3,9 +3,6 @@ package co.com.jcuadrado.api.constant.api;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-/**
- * Constantes para endpoints de usuarios
- */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserEndpoints {
     

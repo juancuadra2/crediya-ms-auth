@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.UUID;
+
 @Table(name = RoleConstants.ROLE_TABLE_NAME)
 @Data
 @AllArgsConstructor
@@ -15,7 +17,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder(toBuilder = true)
 public class RoleEntity {
     @Id
-    private String id;
+    private UUID id;
     private String name;
     private String description;
 }

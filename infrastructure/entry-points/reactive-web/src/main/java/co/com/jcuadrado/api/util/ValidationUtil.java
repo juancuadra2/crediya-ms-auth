@@ -1,11 +1,11 @@
 package co.com.jcuadrado.api.util;
 
-import co.com.jcuadrado.api.constant.validation.ValidationMessages;
 import co.com.jcuadrado.api.dto.ErrorResponseDTO;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
@@ -25,8 +25,8 @@ public final class ValidationUtil {
                     .collect(Collectors.toSet());
 
             ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
-                    .error(ValidationMessages.VALIDATION_FAILED)
-                    .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                    .error(HttpStatus.BAD_REQUEST.name())
+                    .status(ObjectUtils.nullSafeToString(HttpStatus.BAD_REQUEST.value()))
                     .messages(errorMessages)
                     .build();
 
