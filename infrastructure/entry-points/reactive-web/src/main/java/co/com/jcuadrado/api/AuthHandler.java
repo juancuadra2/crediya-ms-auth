@@ -4,7 +4,6 @@ import co.com.jcuadrado.api.constant.SuccessStatus;
 import co.com.jcuadrado.api.constant.validation.ValidationMessages;
 import co.com.jcuadrado.api.dto.auth.AuthResponseDTO;
 import co.com.jcuadrado.api.dto.auth.LoginRequestDTO;
-import co.com.jcuadrado.api.exception.RequestException;
 import co.com.jcuadrado.api.mapper.LoginRequestDTOMapper;
 import co.com.jcuadrado.api.util.ResponseUtil;
 import co.com.jcuadrado.api.util.ValidationUtil;
@@ -17,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -30,10 +30,10 @@ public class AuthHandler {
 
     public Mono<ServerResponse> login(ServerRequest request) {
         return request.bodyToMono(LoginRequestDTO.class)
-                .switchIfEmpty(Mono.error(new RequestException(HttpStatus.BAD_REQUEST, ValidationMessages.INVALID_REQUEST_BODY)))
-                .flatMap(dto -> ValidationUtil.validateAndReturnError(validator, dto)
-                        .switchIfEmpty(logInUseCase.logIn(mapper.toModel(dto))
-                        .flatMap(this::generateTokenResponse))
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, ValidationMessages.INVALID_REQUEST_BODY)))
+                .flatMap(dto -> ValidationUtil.validateOrThrow(validator, dto)
+                        .then(logInUseCase.logIn(mapper.toModel(dto))
+                                .flatMap(this::generateTokenResponse))
                 );
     }
 

@@ -35,13 +35,9 @@ public class AuthorizationUtil {
         return getCurrentUserRoles()
                 .switchIfEmpty(Mono.error(new AuthException(AuthException.ErrorType.FORBIDDEN, AuthConstants.USER_NOT_AUTHENTICATED_ERROR)))
                 .flatMap(userRoles -> {
-                    boolean hasRequiredRole = Arrays.stream(allowedRoles)
-                            .anyMatch(userRoles::contains);
-                    if (hasRequiredRole) {
-                        return response;
-                    } else {
-                        return Mono.error(new AuthException(AuthException.ErrorType.FORBIDDEN, AuthConstants.ACCESS_DENIED_ERROR));
-                    }
+                    boolean hasRequiredRole = Arrays.stream(allowedRoles).anyMatch(userRoles::contains);
+                    if (hasRequiredRole) return response;
+                    return Mono.error(new AuthException(AuthException.ErrorType.FORBIDDEN, AuthConstants.ACCESS_DENIED_ERROR));
                 });
     }
 }

@@ -2,8 +2,10 @@ package co.com.jcuadrado.api;
 
 import co.com.jcuadrado.api.constant.api.UserEndpoints;
 import co.com.jcuadrado.api.constant.auth.AuthRoles;
+import co.com.jcuadrado.api.constant.validation.ValidationMessages;
 import co.com.jcuadrado.api.util.AuthorizationUtil;
 import co.com.jcuadrado.usecase.user.FindUserUseCase;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -18,6 +20,7 @@ import co.com.jcuadrado.api.util.ValidationUtil;
 import co.com.jcuadrado.usecase.user.SaveUserUseCase;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -32,13 +35,11 @@ public class UserHandler {
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
         return AuthorizationUtil.requireAnyRole(new String[]{AuthRoles.ADMIN.name(), AuthRoles.ADVISER.name()},
                 serverRequest.bodyToMono(CreateUserDTO.class)
-                        .flatMap(createUserDTO -> ValidationUtil.validateAndReturnError(validator, createUserDTO)
-                                .switchIfEmpty(
-                                        saveUserUseCase.saveUser(userDTOMapper.toModel(createUserDTO))
-                                                .transform(userDTOMapper::toDTOMono)
-                                                .flatMap(userDTO -> ResponseUtil.buildSuccessResponse(userDTO,
-                                                        SuccessStatus.CREATED))))
-        );
+                        .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, ValidationMessages.INVALID_REQUEST_BODY)))
+                        .flatMap(createUserDTO -> ValidationUtil.validateOrThrow(validator, createUserDTO)
+                                .then(Mono.defer(() -> saveUserUseCase.saveUser(userDTOMapper.toModel(createUserDTO))
+                                        .transform(userDTOMapper::toDTOMono))))
+                        .flatMap(userDTO -> ResponseUtil.buildSuccessResponse(userDTO, SuccessStatus.CREATED)));
     }
 
     /**

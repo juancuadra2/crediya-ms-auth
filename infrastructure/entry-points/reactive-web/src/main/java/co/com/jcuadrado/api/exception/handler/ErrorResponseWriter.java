@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -24,6 +25,8 @@ public class ErrorResponseWriter {
 
     public Mono<Void> writeErrorResponse(ServerHttpResponse response, Set<String> messages, HttpStatus status) {
         response.setStatusCode(status);
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
         ErrorResponseDTO errorResponse = buildErrorResponse(messages, status);
         try {
             String jsonResponse = objectMapper.writeValueAsString(errorResponse);
