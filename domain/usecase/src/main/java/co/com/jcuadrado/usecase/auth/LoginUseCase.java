@@ -60,12 +60,10 @@ public record LoginUseCase(
 
     private Mono<User> attachRoleToUser(User user) {
         return roleUseCase.getRoleById(user.getRole())
-                .map(role -> updateUserWithRoleName(user, role.getName()));
-    }
-
-    private User updateUserWithRoleName(User user, String roleName) {
-        user.setRole(roleName);
-        return user;
+                .map(role -> {
+                    user.setRole(role.getName());
+                    return user;
+                });
     }
 
     private BusinessException createInvalidCredentialsException() {

@@ -10,22 +10,23 @@ import reactor.core.publisher.Mono;
 public record TokenManagerUseCase(AuthTokenGateway authTokenGateway) {
 
     public Mono<Boolean> validateToken(String token) {
-        validateInput(token);
-        return authTokenGateway.validateToken(token);
+        return validateInput(token)
+                .then(authTokenGateway.validateToken(token));
     }
 
     public Mono<String> getSubject(String token) {
-        validateInput(token);
-        return authTokenGateway.getSubject(token);
+        return validateInput(token)
+                .then(authTokenGateway.getSubject(token));
     }
 
     public Flux<String> getRoles(String token) {
-        validateInput(token);
-        return authTokenGateway.getRoles(token);
+        return validateInput(token)
+                .thenMany(authTokenGateway.getRoles(token));
     }
 
-    private void validateInput(String token){
-        if (token == null) throw new BusinessException(ErrorMessage.INVALID_TOKEN, ErrorCode.BAD_REQUEST);
+    private Mono<Void> validateInput(String token){
+        if (token == null) return Mono.error(new BusinessException(ErrorMessage.INVALID_TOKEN, ErrorCode.BAD_REQUEST));
+        return Mono.empty();
     }
 
 }
