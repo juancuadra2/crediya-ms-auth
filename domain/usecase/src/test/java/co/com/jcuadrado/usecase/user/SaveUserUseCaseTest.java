@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+
+import co.com.jcuadrado.model.auth.gateways.PasswordEncoderGateway;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +27,10 @@ class SaveUserUseCaseTest {
 
     @Mock
     private UserRepository repository;
+
+    @Mock
+    private PasswordEncoderGateway passwordEncoderGateway;
+
     @InjectMocks
     private SaveUserUseCase useCase;
 
@@ -36,9 +42,11 @@ class SaveUserUseCaseTest {
                 .lastName("Cuadrado")
                 .email("juan.cuadrado@mail.com")
                 .baseSalary(BigDecimal.valueOf(10000000L))
+                .password("12345678")
                 .build();
-        when(repository.getUserByEmailOrDocumentNumber(user.getEmail(), user.getDocumentNumber()))
-                .thenReturn(Mono.empty());
+
+        when(passwordEncoderGateway.encode(user.getPassword())).thenReturn(Mono.just("12345678"));
+        when(repository.getUserByEmailOrDocumentNumber(user.getEmail(), user.getDocumentNumber())).thenReturn(Mono.empty());
         when(repository.saveUser(user)).thenReturn(Mono.just(user));
 
         Mono<User> result = useCase.saveUser(user);
@@ -133,12 +141,55 @@ class SaveUserUseCaseTest {
     }
 
     @Test
+    void failedSaveUserPasswordIsNullOrEmpty(){
+        User user = User.builder()
+                .documentNumber("123456789")
+                .name("Juan")
+                .lastName("Cuadrado")
+                .email("test@mail.com")
+                .password("")
+                .baseSalary(BigDecimal.valueOf(10000000.00))
+                .build();
+        Mono<User> result = useCase.saveUser(user);
+        StepVerifier.create(result)
+                .expectErrorSatisfies(error -> {
+                    BusinessException ex = assertInstanceOf(BusinessException.class, error);
+                    assertEquals(ErrorMessage.PASSWORD_REQUIRED, ex.getMessage());
+                    assertEquals(ErrorCode.BAD_REQUEST, ex.getCode());
+                })
+                .verify();
+    }
+
+    @Test
+    void failedSaveUserPasswordIsNotValid(){
+        User user = User.builder()
+                .documentNumber("123456789")
+                .name("Juan")
+                .lastName("Cuadrado")
+                .email("test@mail.com")
+                .password("123")
+                .baseSalary(BigDecimal.valueOf(10000000.00))
+                .build();
+
+        Mono<User> result = useCase.saveUser(user);
+
+        StepVerifier.create(result)
+                .expectErrorSatisfies(error -> {
+                    BusinessException ex = assertInstanceOf(BusinessException.class, error);
+                    assertEquals(ErrorMessage.PASSWORD_MIN_LENGTH, ex.getMessage());
+                    assertEquals(ErrorCode.BAD_REQUEST, ex.getCode());
+                })
+                .verify();
+    }
+
+    @Test
     void failedSaveUserBaseSalaryIsNullOrEmpty() {
         User user = User.builder()
                 .documentNumber("123456789")
                 .name("Juan")
                 .lastName("Cuadrado")
                 .email("juan.cuadrado@mail.com")
+                .password("12345678")
                 .baseSalary(null)
                 .build();
 
@@ -160,6 +211,7 @@ class SaveUserUseCaseTest {
                 .name("Juan")
                 .lastName("Cuadrado")
                 .email("juan.cuadrado@mail.com")
+                .password("12345678")
                 .baseSalary(BigDecimal.valueOf(-0.00))
                 .build();
         Mono<User> result = useCase.saveUser(user);
@@ -179,6 +231,7 @@ class SaveUserUseCaseTest {
                 .name("Juan")
                 .lastName("Cuadrado")
                 .email("juan.cuadrado@mail.com")
+                .password("12345678")
                 .baseSalary(BigDecimal.valueOf(16000000.00))
                 .build();
 
@@ -199,12 +252,12 @@ class SaveUserUseCaseTest {
                 .name("Juan")
                 .lastName("Cuadrado")
                 .email("juan.cuadrado@mail.com")
+                .password("12345678")
                 .baseSalary(BigDecimal.valueOf(10000000.00))
                 .build();
 
-        when(repository.getUserByEmailOrDocumentNumber(user.getEmail(), user.getDocumentNumber()))
-                .thenReturn(Mono.just(user));
-        when(repository.saveUser(user)).thenReturn(Mono.just(user));
+        when(passwordEncoderGateway.encode(user.getPassword())).thenReturn(Mono.just("12345678"));
+        when(repository.getUserByEmailOrDocumentNumber(user.getEmail(), user.getDocumentNumber())).thenReturn(Mono.just(user));
 
         Mono<User> result = useCase.saveUser(user);
 

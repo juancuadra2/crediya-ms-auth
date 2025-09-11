@@ -21,7 +21,7 @@ public record LoginUseCase(
 ) {
 
     public Mono<AuthResponse> login(LoginRequest loginRequest) {
-        return validateLoginPayload(loginRequest)
+        return LoginPayloadValidator.validate(loginRequest)
                 .flatMap(this::authenticateUser)
                 .flatMap(this::attachRoleToUser)
                 .flatMap(user -> authTokenGateway.generateToken(user)
@@ -30,10 +30,6 @@ public record LoginUseCase(
                                 .email(user.getEmail())
                                 .role(user.getRole())
                                 .build()));
-    }
-
-    private Mono<LoginRequest> validateLoginPayload(LoginRequest loginRequest) {
-        return LoginPayloadValidator.validate(loginRequest);
     }
 
     private Mono<User> authenticateUser(LoginRequest loginRequest) {

@@ -11,17 +11,17 @@ public record TokenManagerUseCase(AuthTokenGateway authTokenGateway) {
 
     public Mono<Boolean> validateToken(String token) {
         return validateInput(token)
-                .then(authTokenGateway.validateToken(token));
+                .then(Mono.defer(() -> authTokenGateway.validateToken(token)));
     }
 
     public Mono<String> getSubject(String token) {
         return validateInput(token)
-                .then(authTokenGateway.getSubject(token));
+                .then(Mono.defer(() -> authTokenGateway.getSubject(token)));
     }
 
     public Flux<String> getRoles(String token) {
         return validateInput(token)
-                .thenMany(authTokenGateway.getRoles(token));
+                .thenMany(Flux.defer(() -> authTokenGateway.getRoles(token)));
     }
 
     private Mono<Void> validateInput(String token){
