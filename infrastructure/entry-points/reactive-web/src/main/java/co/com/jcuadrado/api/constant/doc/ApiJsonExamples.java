@@ -80,4 +80,35 @@ public final class ApiJsonExamples {
           "status": "INTERNAL_SERVER_ERROR"
         }
         """;
+
+    // Auth examples
+    public static final String LOGIN_REQUEST_EXAMPLE = """
+        {
+          "email": "admin@example.com",
+          "password": "admin123"
+        }
+        """;
+
+    public static final String LOGIN_RESPONSE_EXAMPLE = """
+        {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "email": "admin@example.com",
+          "role": "ADMIN"
+        }
+        """;
+
+    public static final String VALIDATE_TOKEN_RESPONSE_EXAMPLE = """
+        {
+          "email": "admin@example.com",
+          "role": "ADMIN"
+        }
+        """;
+
+    public static final String UNAUTHORIZED_ERROR_RESPONSE_EXAMPLE = """
+        {
+          "messages": ["Credenciales inválidas"],
+          "error": "Unauthorized",
+          "status": "UNAUTHORIZED"
+        }
+        """;
 }

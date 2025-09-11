@@ -33,7 +33,13 @@ public class JwtFilter implements WebFilter {
 
     private boolean isPublicPath(ServerWebExchange exchange) {
         String path = exchange.getRequest().getPath().value();
-        return path.startsWith(AuthEndpoints.AUTH_API_PATH + AuthEndpoints.LOGIN_ENDPOINT);
+        return path.startsWith(AuthEndpoints.AUTH_API_PATH + AuthEndpoints.LOGIN_ENDPOINT)
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-resources")
+                || path.startsWith("/webjars")
+                || path.startsWith("/actuator")
+                || path.startsWith("/h2") ;
     }
 
     private Mono<String> extractToken(ServerHttpRequest request) {

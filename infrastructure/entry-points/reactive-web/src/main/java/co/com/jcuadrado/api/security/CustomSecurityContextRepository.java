@@ -1,8 +1,6 @@
 package co.com.jcuadrado.api.security;
 
 import co.com.jcuadrado.api.constant.auth.AuthConstants;
-
-import co.com.jcuadrado.api.exception.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -30,7 +28,7 @@ public class CustomSecurityContextRepository implements ServerSecurityContextRep
             token = extractTokenFromRequest(exchange);
         }
         if (token == null) {
-            return Mono.error(new AuthException(AuthException.ErrorType.UNAUTHORIZED, AuthConstants.NO_TOKEN_PROVIDED_ERROR));
+            return Mono.empty(); // Return empty instead of error for anonymous access
         }
         return jwtAuthenticationManager.authenticate(new UsernamePasswordAuthenticationToken(token, token))
                 .map(SecurityContextImpl::new)

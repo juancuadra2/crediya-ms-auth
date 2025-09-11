@@ -14,5 +14,6 @@ public final class OpenApiSchemaConstants {
     public static final String STATUS_200 = "200";
     public static final String STATUS_201 = "201";
     public static final String STATUS_400 = "400";
+    public static final String STATUS_401 = "401";
     public static final String STATUS_500 = "500";
 }

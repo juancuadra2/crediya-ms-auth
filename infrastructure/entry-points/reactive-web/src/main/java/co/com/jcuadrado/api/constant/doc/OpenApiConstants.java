@@ -12,5 +12,7 @@ public final class OpenApiConstants {
     public static final String COMPONENT_SCHEMA_USER_DTO = "#/components/schemas/UserDTO";
     public static final String COMPONENT_SCHEMA_CREATE_USER_DTO = "#/components/schemas/CreateUserDTO";
     public static final String COMPONENT_SCHEMA_ERROR_RESPONSE_DTO = "#/components/schemas/ErrorResponseDTO";
+    public static final String COMPONENT_SCHEMA_LOGIN_REQUEST_DTO = "#/components/schemas/LoginRequestDTO";
+    public static final String COMPONENT_SCHEMA_AUTH_RESPONSE_DTO = "#/components/schemas/AuthResponseDTO";
 
 }
