@@ -2,7 +2,7 @@ package co.com.jcuadrado.api.security;
 
 import co.com.jcuadrado.api.constant.auth.AuthConstants;
 import co.com.jcuadrado.api.exception.AuthException;
-import co.com.jcuadrado.model.auth.gateways.AuthTokenGateway;
+import co.com.jcuadrado.usecase.auth.TokenManagerUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
 
-    private final AuthTokenGateway authTokenGateway;
+    private final TokenManagerUseCase tokenManager;
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
@@ -27,7 +27,7 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
     }
 
     private Mono<String> validateToken(String token) {
-        return authTokenGateway.validateToken(token)
+        return tokenManager.validateToken(token)
                 .filter(Boolean::booleanValue)
                 .map(valid -> token)
                 .switchIfEmpty(Mono.error(new AuthException(AuthException.ErrorType.UNAUTHORIZED, AuthConstants.INVALID_TOKEN_ERROR)));
@@ -35,8 +35,8 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
 
     private Mono<Authentication> buildAuthentication(String token) {
         return Mono.zip(
-                authTokenGateway.getSubject(token),
-                authTokenGateway.getRoles(token).map(SimpleGrantedAuthority::new).collectList()
+                tokenManager.getSubject(token),
+                tokenManager.getRoles(token).map(SimpleGrantedAuthority::new).collectList()
         ).map(tuple -> {
             String subject = tuple.getT1();
             List<SimpleGrantedAuthority> authorities = tuple.getT2();

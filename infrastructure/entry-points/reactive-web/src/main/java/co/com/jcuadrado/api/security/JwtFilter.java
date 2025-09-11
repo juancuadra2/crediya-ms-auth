@@ -3,7 +3,7 @@ package co.com.jcuadrado.api.security;
 import co.com.jcuadrado.api.constant.api.AuthEndpoints;
 import co.com.jcuadrado.api.constant.auth.AuthConstants;
 import co.com.jcuadrado.api.exception.AuthException;
-import co.com.jcuadrado.model.auth.gateways.AuthTokenGateway;
+import co.com.jcuadrado.usecase.auth.TokenManagerUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -18,7 +18,7 @@ import reactor.util.annotation.NonNull;
 @RequiredArgsConstructor
 public class JwtFilter implements WebFilter {
 
-    private final AuthTokenGateway authTokenGateway;
+    private final TokenManagerUseCase tokenManager;
 
     @Override
     @NonNull
@@ -51,7 +51,7 @@ public class JwtFilter implements WebFilter {
     }
 
     private Mono<String> validateAndProcessToken(String token) {
-        return authTokenGateway.validateToken(token)
+        return tokenManager.validateToken(token)
                 .filter(Boolean::booleanValue)
                 .map(valid -> token)
                 .switchIfEmpty(Mono.error(new AuthException(AuthException.ErrorType.UNAUTHORIZED, AuthConstants.INVALID_TOKEN_ERROR)));

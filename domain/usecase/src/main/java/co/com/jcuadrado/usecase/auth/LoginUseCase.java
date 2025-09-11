@@ -1,35 +1,44 @@
-package co.com.jcuadrado.usecase.login;
+package co.com.jcuadrado.usecase.auth;
 
 import co.com.jcuadrado.constants.ErrorCode;
 import co.com.jcuadrado.constants.ErrorMessage;
 import co.com.jcuadrado.exceptions.BusinessException;
 import co.com.jcuadrado.handler.LoginPayloadValidator;
-import co.com.jcuadrado.model.auth.Login;
+import co.com.jcuadrado.model.auth.AuthResponse;
+import co.com.jcuadrado.model.auth.LoginRequest;
+import co.com.jcuadrado.model.auth.gateways.AuthTokenGateway;
 import co.com.jcuadrado.model.user.User;
 import co.com.jcuadrado.model.auth.gateways.PasswordEncoderGateway;
 import co.com.jcuadrado.model.user.gateways.UserRepository;
 import co.com.jcuadrado.usecase.role.RoleUseCase;
 import reactor.core.publisher.Mono;
 
-public record LogInUseCase(
+public record LoginUseCase(
         UserRepository userRepository,
         PasswordEncoderGateway passwordEncoderGateway,
-        RoleUseCase roleUseCase
+        RoleUseCase roleUseCase,
+        AuthTokenGateway authTokenGateway
 ) {
 
-    public Mono<User> logIn(Login login) {
-        return validateLoginPayload(login)
+    public Mono<AuthResponse> login(LoginRequest loginRequest) {
+        return validateLoginPayload(loginRequest)
                 .flatMap(this::authenticateUser)
-                .flatMap(this::attachRoleToUser);
+                .flatMap(this::attachRoleToUser)
+                .flatMap(user -> authTokenGateway.generateToken(user)
+                        .map(token -> AuthResponse.builder()
+                                .token(token)
+                                .email(user.getEmail())
+                                .role(user.getRole())
+                                .build()));
     }
 
-    private Mono<Login> validateLoginPayload(Login login) {
-        return LoginPayloadValidator.validate(login);
+    private Mono<LoginRequest> validateLoginPayload(LoginRequest loginRequest) {
+        return LoginPayloadValidator.validate(loginRequest);
     }
 
-    private Mono<User> authenticateUser(Login login) {
-        return getUserByEmail(login.getEmail())
-                .flatMap(user -> validatePassword(login.getPassword(), user));
+    private Mono<User> authenticateUser(LoginRequest loginRequest) {
+        return getUserByEmail(loginRequest.getEmail())
+                .flatMap(user -> validatePassword(loginRequest.getPassword(), user));
     }
 
     private Mono<User> validatePassword(String providedPassword, User user) {

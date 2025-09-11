@@ -1,5 +1,6 @@
 package co.com.jcuadrado.jwtsecurity;
 
+import co.com.jcuadrado.jwtsecurity.constant.JwtConstants;
 import co.com.jcuadrado.model.auth.gateways.AuthTokenGateway;
 import co.com.jcuadrado.model.user.User;
 import io.jsonwebtoken.Claims;
@@ -37,12 +38,12 @@ public class AuthTokenGatewayImpl implements AuthTokenGateway {
     @Override
     public Flux<String> getRoles(String token) {
         Claims claims = jwtProvider.getClaims(token);
-        Object rolesObj = claims.get("roles");
+        Object rolesObj = claims.get(JwtConstants.ROLES_CLAIM);
         if (rolesObj instanceof Iterable<?> roles) {
             return Flux.fromIterable(roles)
                     .mapNotNull(roleObj -> {
                         if (roleObj instanceof java.util.Map<?, ?> roleMap) {
-                            Object authority = roleMap.get("authority");
+                            Object authority = roleMap.get(JwtConstants.AUTHORITIES_CLAIM);
                             return authority != null ? authority.toString() : null;
                         }
                         return null;
