@@ -71,6 +71,8 @@ public class JwtProvider {
             log.error(LogMessages.TOKEN_MALFORMED_LOG, e.getMessage());
         } catch (IllegalArgumentException e) {
             log.error(LogMessages.ILLEGAL_ARGS_LOG, e.getMessage());
+        } catch (Exception e) {
+            log.error(LogMessages.TOKEN_SIGNATURE_ERROR_LOG, e.getMessage());
         }
         return false;
     }

@@ -9,4 +9,5 @@ public final class LogMessages {
     public static final String TOKEN_UNSUPPORTED_LOG = "Token unsupported: {}";
     public static final String TOKEN_MALFORMED_LOG = "Token malformed: {}";
     public static final String ILLEGAL_ARGS_LOG = "Illegal args: {}";
+    public static final String TOKEN_SIGNATURE_ERROR_LOG = "Token signature error: {}";
 }

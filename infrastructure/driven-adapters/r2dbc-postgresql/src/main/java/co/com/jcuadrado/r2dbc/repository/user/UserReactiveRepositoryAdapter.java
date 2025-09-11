@@ -28,36 +28,11 @@ public class UserReactiveRepositoryAdapter
     @Override
     public Mono<User> saveUser(User user) {
         UserEntity entity = toData(user);
-        
-        // Convertir nombre de rol a UUID
-        UUID roleUuid = convertRoleNameToUuid(user.getRole());
-        entity.setRole(roleUuid);
+        entity.setRole(UUID.fromString(user.getRole()));
         
         return repository.save(entity)
                 .map(this::toEntity)
-                .onErrorMap(ex -> new GeneralException(UserConstants.ERROR_SAVING_USER + ex.getMessage(),
-                        ErrorCode.INTERNAL_ERROR));
-    }
-    
-    private UUID convertRoleNameToUuid(String roleName) {
-        // Mapeo temporal de nombres de roles a UUIDs
-        // En una implementación completa, esto debería consultar la base de datos
-        switch (roleName.toUpperCase()) {
-            case "ADMIN":
-                return UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
-            case "ADVISER":
-                return UUID.fromString("550e8400-e29b-41d4-a716-446655440002");
-            case "USER":
-                return UUID.fromString("550e8400-e29b-41d4-a716-446655440003");
-            default:
-                // Si no es un rol conocido, intentar convertirlo directamente 
-                // (por si viene un UUID válido)
-                try {
-                    return UUID.fromString(roleName);
-                } catch (IllegalArgumentException e) {
-                    throw new GeneralException("Rol no válido: " + roleName, ErrorCode.BAD_REQUEST);
-                }
-        }
+                .onErrorMap(ex -> new GeneralException(UserConstants.ERROR_SAVING_USER + ex.getMessage(), ErrorCode.INTERNAL_ERROR));
     }
 
     @Override
