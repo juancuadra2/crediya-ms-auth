@@ -17,8 +17,8 @@ adapters:
     port: 5432
     database: "crediya_auth"
     schema: "public"
-    username: "jcuadrado"
-    password: "jcu4dr4d0"
+    username: "jcuadrado_auth"
+    password: "jcuadrado_auth"
 management:
   endpoints:
     web:
