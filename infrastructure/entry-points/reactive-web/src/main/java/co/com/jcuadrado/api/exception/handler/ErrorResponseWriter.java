@@ -27,7 +27,7 @@ public class ErrorResponseWriter {
         response.setStatusCode(status);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        ErrorResponseDTO errorResponse = buildErrorResponse(messages, status);
+        ErrorResponseDTO errorResponse = buildErrorResponse(messages);
         try {
             String jsonResponse = objectMapper.writeValueAsString(errorResponse);
             DataBuffer buffer = response.bufferFactory()
@@ -39,11 +39,9 @@ public class ErrorResponseWriter {
         }
     }
 
-    private ErrorResponseDTO buildErrorResponse(Set<String> messages, HttpStatus status) {
+    private ErrorResponseDTO buildErrorResponse(Set<String> messages) {
         return ErrorResponseDTO.builder()
                 .messages(messages)
-                .error(status.name())
-                .status(String.valueOf(status.value()))
                 .build();
     }
 }
