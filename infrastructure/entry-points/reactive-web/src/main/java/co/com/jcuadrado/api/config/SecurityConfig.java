@@ -1,6 +1,8 @@
 package co.com.jcuadrado.api.config;
 
 import co.com.jcuadrado.api.security.CustomSecurityContextRepository;
+import co.com.jcuadrado.api.constant.api.AuthEndpoints;
+import co.com.jcuadrado.api.constant.http.PublicPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,14 +28,14 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .logout(ServerHttpSecurity.LogoutSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/auth/**").permitAll()
-                        .pathMatchers("/h2/**").permitAll()
-                        .pathMatchers("/actuator/**").permitAll()
-                        .pathMatchers("/swagger-ui/**").permitAll()
-                        .pathMatchers("/swagger-ui.html").permitAll()
-                        .pathMatchers("/v3/api-docs/**").permitAll()
-                        .pathMatchers("/swagger-resources/**").permitAll()
-                        .pathMatchers("/webjars/**").permitAll()
+                        .pathMatchers(AuthEndpoints.AUTH_API_PATH + PublicPaths.PATH_WILDCARD).permitAll()
+                        .pathMatchers(PublicPaths.H2_WILDCARD).permitAll()
+                        .pathMatchers(PublicPaths.ACTUATOR_WILDCARD).permitAll()
+                        .pathMatchers(PublicPaths.SWAGGER_UI_WILDCARD).permitAll()
+                        .pathMatchers(PublicPaths.SWAGGER_UI_HTML).permitAll()
+                        .pathMatchers(PublicPaths.V3_API_DOCS_WILDCARD).permitAll()
+                        .pathMatchers(PublicPaths.SWAGGER_RESOURCES_WILDCARD).permitAll()
+                        .pathMatchers(PublicPaths.WEBJARS_WILDCARD).permitAll()
                         .anyExchange().authenticated())
                 .securityContextRepository(securityContextRepository)
                 .build();

@@ -1,7 +1,7 @@
 package co.com.jcuadrado.usecase.user;
 
-import co.com.jcuadrado.handler.UserConflictValidator;
-import co.com.jcuadrado.handler.UserPayloadValidator;
+import co.com.jcuadrado.validator.UserConflictValidator;
+import co.com.jcuadrado.validator.UserPayloadValidator;
 import co.com.jcuadrado.model.user.User;
 import co.com.jcuadrado.model.auth.gateways.PasswordEncoderGateway;
 import co.com.jcuadrado.model.user.gateways.UserRepository;

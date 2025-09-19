@@ -3,20 +3,20 @@ package co.com.jcuadrado.usecase.auth;
 import co.com.jcuadrado.constants.ErrorCode;
 import co.com.jcuadrado.constants.ErrorMessage;
 import co.com.jcuadrado.exceptions.BusinessException;
-import co.com.jcuadrado.handler.LoginPayloadValidator;
+import co.com.jcuadrado.model.role.gateways.RoleRepository;
+import co.com.jcuadrado.validator.LoginPayloadValidator;
 import co.com.jcuadrado.model.auth.AuthResponse;
 import co.com.jcuadrado.model.auth.LoginRequest;
 import co.com.jcuadrado.model.auth.gateways.AuthTokenGateway;
 import co.com.jcuadrado.model.user.User;
 import co.com.jcuadrado.model.auth.gateways.PasswordEncoderGateway;
 import co.com.jcuadrado.model.user.gateways.UserRepository;
-import co.com.jcuadrado.usecase.role.RoleUseCase;
 import reactor.core.publisher.Mono;
 
 public record LoginUseCase(
         UserRepository userRepository,
         PasswordEncoderGateway passwordEncoderGateway,
-        RoleUseCase roleUseCase,
+        RoleRepository roleRepository,
         AuthTokenGateway authTokenGateway
 ) {
 
@@ -55,7 +55,8 @@ public record LoginUseCase(
     }
 
     private Mono<User> attachRoleToUser(User user) {
-        return roleUseCase.getRoleById(user.getRole())
+        return roleRepository.getRoleById(user.getRole())
+                .switchIfEmpty(Mono.error(new BusinessException(ErrorMessage.ROLE_DOES_NOT_EXIST, ErrorCode.NOT_FOUND)))
                 .map(role -> {
                     user.setRole(role.getName());
                     return user;

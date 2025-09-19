@@ -5,10 +5,10 @@ import co.com.jcuadrado.exceptions.BusinessException;
 import co.com.jcuadrado.model.auth.AuthResponse;
 import co.com.jcuadrado.model.auth.LoginRequest;
 import co.com.jcuadrado.model.auth.gateways.AuthTokenGateway;
+import co.com.jcuadrado.model.role.gateways.RoleRepository;
 import co.com.jcuadrado.model.user.User;
 import co.com.jcuadrado.model.auth.gateways.PasswordEncoderGateway;
 import co.com.jcuadrado.model.user.gateways.UserRepository;
-import co.com.jcuadrado.usecase.role.RoleUseCase;
 import co.com.jcuadrado.model.role.Role;
 
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ class LoginUseCaseTest {
     private PasswordEncoderGateway passwordEncoderGateway;
 
     @Mock
-    private RoleUseCase roleUseCase;
+    private RoleRepository roleRepository;
 
     @Mock
     private AuthTokenGateway authTokenGateway;
@@ -75,7 +75,7 @@ class LoginUseCaseTest {
 
         when(userRepository.getUserByEmail(email)).thenReturn(Mono.just(user));
         when(passwordEncoderGateway.matches(password, hashedPassword)).thenReturn(Mono.just(true));
-        when(roleUseCase.getRoleById(roleId)).thenReturn(Mono.just(role));
+        when(roleRepository.getRoleById(roleId)).thenReturn(Mono.just(role));
         when(authTokenGateway.generateToken(any(User.class))).thenReturn(Mono.just(token));
 
         Mono<AuthResponse> result = loginUseCase.login(loginRequest);
@@ -91,7 +91,7 @@ class LoginUseCaseTest {
 
         verify(userRepository, times(1)).getUserByEmail(email);
         verify(passwordEncoderGateway, times(1)).matches(password, hashedPassword);
-        verify(roleUseCase, times(1)).getRoleById(roleId);
+        verify(roleRepository, times(1)).getRoleById(roleId);
         verify(authTokenGateway, times(1)).generateToken(any(User.class));
     }
 

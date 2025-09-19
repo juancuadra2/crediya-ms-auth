@@ -1,53 +1,56 @@
 # =====================
 # Etapa de construcción
 # =====================
-# Usamos una imagen JDK de Eclipse Temurin, que es ligera y adecuada para Java.
+# Usamos una imagen JDK ligera para compilar
 FROM eclipse-temurin:21-jdk-alpine AS builder
 
-# Instala las dependencias necesarias para Gradle en Alpine.
+# Instala dependencias necesarias para Gradle en Alpine
 RUN apk add --no-cache bash unzip
 
 WORKDIR /build
 
-# Copia todo el código fuente del proyecto al directorio de trabajo.
-COPY . .
+# Copia primero solo los archivos relacionados con Gradle (mejor uso de cache)
+COPY gradlew gradlew.bat ./
+COPY gradle/ ./gradle/
+COPY build.gradle settings.gradle main.gradle gradle.properties ./
 
-# El siguiente comando convierte los finales de línea de CRLF a LF para que el script de Gradle sea ejecutable en entornos Linux.
-RUN sed -i 's/\r$//' gradlew
+# Ajusta gradlew para Linux y permisos de ejecución
+RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
 
-# El siguiente comando asegura que el script de Gradle tenga permisos de ejecución.
-RUN chmod +x gradlew
-
-# Descarga todas las dependencias para aprovechar el cache de Docker.
-# Si estos archivos no cambian, esta capa no se reconstruirá.
+# Descarga dependencias (se cachea mientras no cambien los gradle files)
 RUN ./gradlew dependencies --no-daemon
 
-# Construye el JAR ejecutable.
+# Ahora sí, copia el resto del código fuente
+COPY . .
+
+RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
+
+# Construye el JAR ejecutable (saltando tests y validaciones innecesarias para build)
 RUN ./gradlew clean bootJar -x validateStructure -x test --no-daemon
 
 
 # =====================
 # Etapa de ejecución
 # =====================
-# Usa una imagen JRE más pequeña para el entorno de producción.
+# Imagen más pequeña para ejecutar el JAR
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
-# Copia el JAR construido desde la etapa anterior.
+# Copia el JAR construido desde la etapa anterior
 COPY --from=builder /build/applications/app-service/build/libs/*.jar app.jar
 
-# Crea un usuario y grupo no root para mayor seguridad.
+# Crea un usuario no root para mayor seguridad
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# Expone el puerto por defecto de Spring Boot.
+# Exponer puerto por defecto de Spring Boot
 EXPOSE 8080
 
-# Define una variable de entorno por defecto para el perfil de Spring.
+# Definir perfil por defecto
 ENV SPRING_PROFILES_ACTIVE=docker
 
-# Cambia al usuario no root para ejecutar la aplicación.
+# Ejecutar como usuario no root
 USER appuser
 
-# Define el punto de entrada para ejecutar la aplicación.
+# Comando de arranque
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=70.0", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.Set;
 
 @Component
@@ -28,7 +29,11 @@ public class BusinessExceptionHandler implements ExceptionHandler<BusinessExcept
     public Mono<Void> handle(ServerWebExchange exchange, BusinessException throwable) {
         HttpStatus status = mapErrorCodeToHttpStatus(throwable.code);
         Set<String> messages = Set.of(throwable.getMessage());
-        log.error(LogMessages.BUSINESS_EXCEPTION_LOG, messages, throwable);
+        log.error(LogMessages.BUSINESS_EXCEPTION_LOG, Arrays.asList(
+                throwable.getMessage(),
+                throwable.getLocalizedMessage(),
+                throwable.code.name()
+        ));
         return errorResponseWriter.writeErrorResponse(exchange.getResponse(), messages, status);
     }
 

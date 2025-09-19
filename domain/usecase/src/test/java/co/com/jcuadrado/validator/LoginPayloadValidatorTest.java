@@ -1,4 +1,4 @@
-package co.com.jcuadrado.handler;
+package co.com.jcuadrado.validator;
 
 import co.com.jcuadrado.constants.ErrorMessage;
 import co.com.jcuadrado.exceptions.BusinessException;

@@ -1,4 +1,4 @@
-package co.com.jcuadrado.handler;
+package co.com.jcuadrado.validator;
 
 import java.math.BigDecimal;
 import java.util.Objects;

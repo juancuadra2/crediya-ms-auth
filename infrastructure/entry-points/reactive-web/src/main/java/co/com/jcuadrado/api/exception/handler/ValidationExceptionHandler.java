@@ -23,7 +23,7 @@ public class ValidationExceptionHandler implements ExceptionHandler<ValidationEx
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, ValidationException throwable) {
-        log.error(LogMessages.VALIDATION_EXCEPTION_LOG);
+        log.error(LogMessages.VALIDATION_EXCEPTION_LOG, throwable.getMessages());
         return errorResponseWriter.writeErrorResponse(exchange.getResponse(), throwable.getMessages(), HttpStatus.BAD_REQUEST);
     }
 

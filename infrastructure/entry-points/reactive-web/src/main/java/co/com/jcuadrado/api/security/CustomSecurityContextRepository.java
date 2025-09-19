@@ -2,6 +2,7 @@ package co.com.jcuadrado.api.security;
 
 import co.com.jcuadrado.api.constant.auth.AuthConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -36,7 +37,7 @@ public class CustomSecurityContextRepository implements ServerSecurityContextRep
     }
 
     private String extractTokenFromRequest(ServerWebExchange exchange) {
-        String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
+        String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith(AuthConstants.BEARER_PREFIX)) {
             return authHeader.replace(AuthConstants.BEARER_PREFIX, "");
         }

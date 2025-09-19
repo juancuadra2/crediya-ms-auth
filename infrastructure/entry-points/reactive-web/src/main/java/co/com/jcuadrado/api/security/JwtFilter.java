@@ -2,6 +2,7 @@ package co.com.jcuadrado.api.security;
 
 import co.com.jcuadrado.api.constant.api.AuthEndpoints;
 import co.com.jcuadrado.api.constant.auth.AuthConstants;
+import co.com.jcuadrado.api.constant.http.PublicPaths;
 import co.com.jcuadrado.api.exception.AuthException;
 import co.com.jcuadrado.usecase.auth.TokenManagerUseCase;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,12 @@ public class JwtFilter implements WebFilter {
     private boolean isPublicPath(ServerWebExchange exchange) {
         String path = exchange.getRequest().getPath().value();
         return path.startsWith(AuthEndpoints.AUTH_API_PATH + AuthEndpoints.LOGIN_ENDPOINT)
-                || path.startsWith("/swagger-ui")
-                || path.startsWith("/v3/api-docs")
-                || path.startsWith("/swagger-resources")
-                || path.startsWith("/webjars")
-                || path.startsWith("/actuator")
-                || path.startsWith("/h2") ;
+                || path.startsWith(PublicPaths.SWAGGER_UI)
+                || path.startsWith(PublicPaths.V3_API_DOCS)
+                || path.startsWith(PublicPaths.SWAGGER_RESOURCES)
+                || path.startsWith(PublicPaths.WEBJARS)
+                || path.startsWith(PublicPaths.ACTUATOR)
+                || path.startsWith(PublicPaths.H2_CONSOLE);
     }
 
     private Mono<String> extractToken(ServerHttpRequest request) {
