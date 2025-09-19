@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LogMessages {
     public static final String VALIDATION_EXCEPTION_LOG = "VALIDATION_EXCEPTION: {}";
-    public static final String INTERNAL_SERVER_ERROR_LOG = "INTERNAL_SERVER_ERROR: ";
+    public static final String INTERNAL_SERVER_ERROR_LOG = "INTERNAL_SERVER_ERROR: {}";
     public static final String HTTP_STATUS_EXCEPTION_LOG = "HTTP_STATUS_EXCEPTION: {}";
     public static final String BUSINESS_EXCEPTION_LOG = "BUSINESS_EXCEPTION: {}";
 

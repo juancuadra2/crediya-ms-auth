@@ -1,6 +1,7 @@
 package co.com.jcuadrado.api.exception.handler;
 
 import co.com.jcuadrado.api.constant.error.LogMessages;
+import co.com.jcuadrado.api.constant.error.ExceptionConstants;
 import co.com.jcuadrado.api.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,12 +24,16 @@ public class ValidationExceptionHandler implements ExceptionHandler<ValidationEx
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, ValidationException throwable) {
-        log.error(LogMessages.VALIDATION_EXCEPTION_LOG, throwable.getMessages());
+        String traceString = String.format(ExceptionConstants.TRACE_FORMAT_SIMPLE,
+                throwable.getMessage(),
+                throwable.getCause() != null ? throwable.getCause().toString() : "N/A"
+        );
+        log.error(LogMessages.VALIDATION_EXCEPTION_LOG, traceString);
         return errorResponseWriter.writeErrorResponse(exchange.getResponse(), throwable.getMessages(), HttpStatus.BAD_REQUEST);
     }
 
     @Override
     public int getOrder() {
-        return 1;
+        return ExceptionConstants.VALIDATION_EXCEPTION_HANDLER_ORDER;
     }
 }

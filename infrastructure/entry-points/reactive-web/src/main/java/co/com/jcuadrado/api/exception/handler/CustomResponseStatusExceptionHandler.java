@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Component
@@ -27,13 +28,13 @@ public class CustomResponseStatusExceptionHandler implements ExceptionHandler<Re
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, ResponseStatusException throwable) {
         HttpStatus httpStatus = HttpStatus.valueOf(throwable.getStatusCode().value());
-        String message = throwable.getMessage().replaceAll(".*\"([^\"]*)\".*", "$1");
+        String message = Objects.toString(throwable.getMessage(), "");
+        message = message.replaceAll(ExceptionConstants.QUOTED_MESSAGE_PATTERN.pattern(), "$1");
         message = HttpStatus.UNSUPPORTED_MEDIA_TYPE.equals(httpStatus) ? ExceptionConstants.MEDIA_TYPE_NOT_SUPPORTED_MESSAGE : message;
 
         Set<String> messages = Set.of(message);
-        String traceString = String.format("Message: %s, LocalizedMessage: %s, Cause: %s, StatusCode: %s",
+        String traceString = String.format(ExceptionConstants.TRACE_FORMAT_HTTP_STATUS,
                 throwable.getMessage(),
-                throwable.getLocalizedMessage(),
                 throwable.getCause() != null ? throwable.getCause().toString() : "N/A",
                 throwable.getStatusCode().value()
         );
@@ -44,6 +45,6 @@ public class CustomResponseStatusExceptionHandler implements ExceptionHandler<Re
 
     @Override
     public int getOrder() {
-        return 2;
+        return ExceptionConstants.RESPONSE_STATUS_EXCEPTION_HANDLER_ORDER;
     }
 }

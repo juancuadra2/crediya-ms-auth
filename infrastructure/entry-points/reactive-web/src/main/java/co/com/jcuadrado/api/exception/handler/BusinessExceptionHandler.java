@@ -1,6 +1,7 @@
 package co.com.jcuadrado.api.exception.handler;
 
 import co.com.jcuadrado.api.constant.error.LogMessages;
+import co.com.jcuadrado.api.constant.error.ExceptionConstants;
 import co.com.jcuadrado.constants.ErrorCode;
 import co.com.jcuadrado.exceptions.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.Set;
 
 @Component
@@ -29,11 +29,12 @@ public class BusinessExceptionHandler implements ExceptionHandler<BusinessExcept
     public Mono<Void> handle(ServerWebExchange exchange, BusinessException throwable) {
         HttpStatus status = mapErrorCodeToHttpStatus(throwable.code);
         Set<String> messages = Set.of(throwable.getMessage());
-        log.error(LogMessages.BUSINESS_EXCEPTION_LOG, Arrays.asList(
+        String traceString = String.format(ExceptionConstants.TRACE_FORMAT_BUSINESS,
                 throwable.getMessage(),
-                throwable.getLocalizedMessage(),
-                throwable.code.name()
-        ));
+                throwable.getCause() != null ? throwable.getCause().toString() : "N/A",
+                throwable.code
+        );
+        log.error(LogMessages.BUSINESS_EXCEPTION_LOG, traceString);
         return errorResponseWriter.writeErrorResponse(exchange.getResponse(), messages, status);
     }
 
@@ -49,6 +50,6 @@ public class BusinessExceptionHandler implements ExceptionHandler<BusinessExcept
 
     @Override
     public int getOrder() {
-        return 3;
+        return ExceptionConstants.BUSINESS_EXCEPTION_HANDLER_ORDER;
     }
 }
