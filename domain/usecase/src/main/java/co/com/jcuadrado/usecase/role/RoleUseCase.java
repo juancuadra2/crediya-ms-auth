@@ -1,21 +1,17 @@
 package co.com.jcuadrado.usecase.role;
 
+import co.com.jcuadrado.constants.ErrorCode;
+import co.com.jcuadrado.constants.ErrorMessage;
+import co.com.jcuadrado.exceptions.BusinessException;
 import co.com.jcuadrado.model.role.Role;
 import co.com.jcuadrado.model.role.gateways.RoleRepository;
-import lombok.RequiredArgsConstructor;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@RequiredArgsConstructor
-public class RoleUseCase {
+public record RoleUseCase(RoleRepository roleRepository) {
 
-    private final RoleRepository roleRepository;
-
-    public Mono<Role> saveRole(Role role) {
-        return roleRepository.saveRole(role);
+    public Mono<Role> getRoleById(String id) {
+        return roleRepository.getRoleById(id)
+                .switchIfEmpty(Mono.error(new BusinessException(ErrorMessage.ROLE_DOES_NOT_EXIST, ErrorCode.NOT_FOUND)));
     }
 
-    public Flux<Role> getAllRoles() {
-        return roleRepository.getAllRoles();
-    }
 }

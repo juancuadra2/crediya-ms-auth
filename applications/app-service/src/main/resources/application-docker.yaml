@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: "CrediYaMsAuth"
+  devtools:
+    add-properties: false
+    restart:
+      enabled: false
+  h2:
+    console:
+      enabled: false
+
+adapters:
+  r2dbc:
+    host: "${DB_HOST:postgres-crediya_auth}"
+    port: ${DB_PORT:5432}
+    database: "${DB_NAME:crediya_auth}"
+    schema: "public"
+    username: "${DB_USERNAME:jcuadrado_auth}"
+    password: "${DB_PASSWORD:jcuadrado_auth}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: "when-authorized"
+  health:
+    circuitbreakers:
+      enabled: true
+
+cors:
+  allowed-origins: "http://localhost:4200,http://frontend:3000,http://gateway:8080"
+
+security:
+  jwt:
+    secret: "${JWT_SECRET:amN1YWRyYWRvX3NlY3JldF9rZXlfZm9yX2p3dF90b2tlbl9nZW5lcmF0aW9u}"
+    expiration: ${JWT_EXPIRATION:3600000}
+
+logging:
+  level:
+    root: "INFO"
+    io.r2dbc: "INFO"
+    io.r2dbc.postgresql: "INFO"
+    io.r2dbc.postgresql.QUERY: "INFO"
+    io.r2dbc.postgresql.PARAM: "INFO"
+    reactor.netty: "INFO"
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId:-},%X{spanId:-}] %logger{40} - %msg%n"
+
+# Docker optimizations
+debug: false
+trace: false
+
+# JVM optimizations for containers
+java:
+  jvm:
+    options: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0"

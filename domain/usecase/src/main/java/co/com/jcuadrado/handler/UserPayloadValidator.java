@@ -28,6 +28,12 @@ public class UserPayloadValidator {
         if (isNullOrEmpty(user.getEmail())) {
             return Mono.error(new BusinessException(ErrorMessage.EMAIL_REQUIRED, ErrorCode.BAD_REQUEST));
         }
+        if (isNullOrEmpty(user.getPassword())) {
+            return Mono.error(new BusinessException(ErrorMessage.PASSWORD_REQUIRED, ErrorCode.BAD_REQUEST));
+        }
+        if (user.getPassword().length() < 8) {
+            return Mono.error(new BusinessException(ErrorMessage.PASSWORD_MIN_LENGTH, ErrorCode.BAD_REQUEST));
+        }
         if (Objects.isNull(user.getBaseSalary())){
             return Mono.error(new BusinessException(ErrorMessage.BASE_SALARY_REQUIRED, ErrorCode.BAD_REQUEST));
         }

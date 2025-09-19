@@ -1,40 +1,26 @@
 package co.com.jcuadrado.api.util;
 
-import co.com.jcuadrado.api.constant.ErrorMessage;
-import co.com.jcuadrado.api.dto.ErrorResponseDTO;
+import co.com.jcuadrado.api.exception.ValidationException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import lombok.NoArgsConstructor;
+
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class ValidationUtil {
 
-    private ValidationUtil() {}
-
-    public static <T> Mono<ServerResponse> validateAndReturnError(Validator validator, T dto) {
+    public static <T> Mono<Void> validateOrThrow(Validator validator, T dto) {
         Set<ConstraintViolation<T>> violations = validator.validate(dto);
-
         if (!violations.isEmpty()) {
             Set<String> errorMessages = violations.stream()
                     .map(ConstraintViolation::getMessage)
                     .collect(Collectors.toSet());
-
-            ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
-                    .error(ErrorMessage.VALIDATION_FAILED)
-                    .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                    .messages(errorMessages)
-                    .build();
-
-            return ServerResponse.badRequest()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(errorResponse);
+            return Mono.error(new ValidationException(errorMessages));
         }
-
         return Mono.empty();
     }
 }
