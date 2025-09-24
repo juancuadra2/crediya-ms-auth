@@ -1,0 +1,30 @@
+# IDE / env
+.idea
+.vscode
+*.iml
+
+# Gradle / build caches (evitar subir caches locales)
+.gradle
+build
+build-cache
+.gradle-cache
+
+# Project root artifacts not needed
+README.md
+docs/
+deployment/*.local
+*.log
+
+# Node / other
+node_modules
+target
+
+# Ignore any generated jars/libs inside modules
+**/build/
+
+.git
+.gitignore
+.dockerignore
+build
+build-cache
+**/bin

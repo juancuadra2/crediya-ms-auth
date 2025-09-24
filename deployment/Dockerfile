@@ -23,11 +23,13 @@ RUN ./gradlew dependencies --no-daemon
 # Ahora sí, copia el resto del código fuente
 COPY . .
 
+# Hacer un ls para verificar que los archivos se copiaron al directorio.
+RUN ls -la -R /build
+
 RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
 
 # Construye el JAR ejecutable (saltando tests y validaciones innecesarias para build)
-RUN ./gradlew clean bootJar -x validateStructure -x test --no-daemon
-
+RUN ./gradlew clean bootJar -x validateStructure -x test --no-daemon && rm -rf ~/.gradle
 
 # =====================
 # Etapa de ejecución
