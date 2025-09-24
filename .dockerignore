@@ -1,30 +1,31 @@
-# IDE / env
+# .dockerignore organizado
+
+# IDE / editores
 .idea
 .vscode
 *.iml
 
-# Gradle / build caches (evitar subir caches locales)
-.gradle
-build
-build-cache
-.gradle-cache
+# Gradle / caches de compilación (evitar subir caches locales)
+.gradle/
+.gradle-cache/
+build/
+build-cache/
 
-# Project root artifacts not needed
+# Artefactos generados por módulos
+**/build/
+**/bin/
+
+# Archivos y carpetas raíz del proyecto que no deben incluirse
 README.md
 docs/
 deployment/*.local
 *.log
 
-# Node / other
-node_modules
-target
+# Node / otros
+node_modules/
+target/
 
-# Ignore any generated jars/libs inside modules
-**/build/
-
+# VCS y archivos de control
 .git
 .gitignore
 .dockerignore
-build
-build-cache
-**/bin
