@@ -1,0 +1,36 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: "CrediYaMsAuth"
+  devtools:
+    add-properties: false
+  h2:
+    console:
+      enabled: true
+      path: "/h2"
+  profiles:
+    include: null
+adapters:
+  r2dbc:
+    host: "localhost"
+    port: 5432
+    database: "crediya_auth"
+    schema: "public"
+    username: "jcuadrado_auth"
+    password: "jcuadrado_auth"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+cors:
+  allowed-origins: "http://localhost:4200,http://localhost:8080"
+security:
+  jwt:
+    secret: "amN1YWRyYWRvX3NlY3JldF9rZXlfZm9yX2p3dF90b2tlbl9nZW5lcmF0aW9u"
+    expiration: 3600000

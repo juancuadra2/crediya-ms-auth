@@ -1,0 +1,91 @@
+<!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<Configuration status="INFO">-->
+<!--    &lt;!&ndash; Define properties &ndash;&gt;-->
+<!--    <Properties>-->
+<!--        &lt;!&ndash; Define the base path where the logs will be stored D:\PROYECTOS\CS-SOLUTIONS\CS-STOCK-MANAGER-SERVER-SPRING-BOOT\LOGS &ndash;&gt;-->
+<!--        &lt;!&ndash;<Property name="logPath">${env:LOG_BASE_LOCATION}</Property>&ndash;&gt;-->
+<!--        <Property name="logPath">/home/jcuadrado/PROJECTS/BOOTCAMPS/PRAGMA/logs</Property>-->
+<!--        <Property name="applicationName">StockManager</Property>-->
+<!--        <Property name="rollingFileName">StockManager</Property>-->
+<!--    </Properties>-->
+<!--    &lt;!&ndash; Define appenders &ndash;&gt;-->
+<!--    <Appenders>-->
+<!--        <Console name="Console" target="SYSTEM_OUT">-->
+<!--            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
+<!--        </Console>-->
+<!--        &lt;!&ndash; RollingFile appender for INFO level logs &ndash;&gt;-->
+<!--        <RollingFile name="rollingFileInfo"-->
+<!--                     fileName="${logPath}/${applicationName}/Info/${rollingFileName}-log-info.log"-->
+<!--                     filePattern="${logPath}/${applicationName}/Info/${rollingFileName}-log-info-%d{yyyy-MM-dd}.log">-->
+<!--            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" />-->
+<!--            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.sss} | %-5level | [%thread] | %logger{36}.%M | \(%line\) | %msg%n"/>-->
+<!--            <Policies>-->
+<!--                <CronTriggeringPolicy schedule="* * 0 ? * * *"/>-->
+<!--                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+<!--            </Policies>-->
+<!--            <DefaultRolloverStrategy max="5">-->
+<!--                <Delete basePath="${logPath}/${applicationName}/Info/" maxDepth="2">-->
+<!--                    <IfLastModified age="30d">-->
+<!--                        <IfAny>-->
+<!--                            <IfAccumulatedFileCount exceeds="5" />-->
+<!--                        </IfAny>-->
+<!--                    </IfLastModified>-->
+<!--                </Delete>-->
+<!--            </DefaultRolloverStrategy>-->
+<!--        </RollingFile>-->
+<!--        &lt;!&ndash; RollingFile appender for DEBUG level logs &ndash;&gt;-->
+<!--        <RollingFile name="rollingFileDebug"-->
+<!--                     fileName="${logPath}/${applicationName}/Debug/${rollingFileName}-log-debug.log"-->
+<!--                     filePattern="${logPath}/${applicationName}/Debug/${rollingFileName}-log-debug-%d{yyyy-MM-dd}.log">-->
+<!--            <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" />-->
+<!--            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.sss} | %-5level | [%thread] | %logger{36}.%M | \(%line\) | %msg%n"/>-->
+<!--            <Policies>-->
+<!--                <CronTriggeringPolicy schedule="* * 0 ? * * *"/>-->
+<!--                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+<!--            </Policies>-->
+<!--            <DefaultRolloverStrategy max="5">-->
+<!--                <Delete basePath="${logPath}/${applicationName}/Debug/" maxDepth="2">-->
+<!--                    <IfLastModified age="30d">-->
+<!--                        <IfAny>-->
+<!--                            <IfAccumulatedFileCount exceeds="5" />-->
+<!--                        </IfAny>-->
+<!--                    </IfLastModified>-->
+<!--                </Delete>-->
+<!--            </DefaultRolloverStrategy>-->
+<!--        </RollingFile>-->
+<!--        &lt;!&ndash; RollingFile appender for ERROR level logs &ndash;&gt;-->
+<!--        <RollingFile name="rollingFileError"-->
+<!--                     fileName="${logPath}/${applicationName}/Error/${rollingFileName}-log-error.log"-->
+<!--                     filePattern="${logPath}/${applicationName}/Error/${rollingFileName}-log-error-%d{yyyy-MM-dd}.log">-->
+<!--            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" />-->
+<!--            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.sss} | %-5level | [%thread] | %logger{36}.%M | \(%line\) | %msg%n"/>-->
+<!--            <Policies>-->
+<!--                <CronTriggeringPolicy schedule="* * 0 ? * * *"/>-->
+<!--                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+<!--            </Policies>-->
+<!--            <DefaultRolloverStrategy max="5">-->
+<!--                <Delete basePath="${logPath}/${applicationName}/Error/" maxDepth="2">-->
+<!--                    <IfLastModified age="30d">-->
+<!--                        <IfAny>-->
+<!--                            <IfAccumulatedFileCount exceeds="5" />-->
+<!--                        </IfAny>-->
+<!--                    </IfLastModified>-->
+<!--                </Delete>-->
+<!--            </DefaultRolloverStrategy>-->
+<!--        </RollingFile>-->
+<!--    </Appenders>-->
+<!--    &lt;!&ndash; Define loggers &ndash;&gt;-->
+<!--    <Loggers>-->
+<!--        <Logger name="com.jcuadrado" level="INFO" />-->
+<!--        <Logger name="com.sun" level="INFO" />-->
+<!--        <Logger name="org.hibernate" level="INFO" />-->
+<!--        <Logger name="org.springframework" level="INFO" />-->
+
+<!--        <Root level="INFO" additivity="false">-->
+<!--            <AppenderRef ref="Console" level="info"/>-->
+<!--            <AppenderRef ref="rollingFileInfo"/>-->
+<!--            <AppenderRef ref="rollingFileDebug"/>-->
+<!--            <AppenderRef ref="rollingFileError"/>-->
+<!--        </Root>-->
+<!--    </Loggers>-->
+<!--</Configuration>-->
